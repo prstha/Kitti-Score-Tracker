@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#0F1D17">
 <title>Kitti किट्टी</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -182,8 +183,21 @@ label{display:block;font-weight:700;margin:0 0 6px}
 .go:active{transform:translateY(2px);box-shadow:0 1px 0 var(--gold-d)}
 
 /* sheets */
-.scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10;display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:var(--panel);color:var(--ink);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:88vh;overflow:auto}
+/* sheets sit inside the visible viewport, so the on-screen keyboard never covers them */
+.scrim{position:fixed;left:0;right:0;top:var(--vv-top,0px);height:var(--vv-h,100dvh);background:rgba(0,0,0,.55);z-index:10;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--panel);color:var(--ink);width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:calc(var(--vv-h,100dvh) - 24px);overflow:auto;overscroll-behavior:contain}
+body.kb .sheet{padding-bottom:14px}
+body.kb .sheet p{margin-bottom:8px}
+body.kb .rail,body.kb .toast{visibility:hidden}
+@media (max-width:380px){
+  .wrap{padding:10px 10px 32px}
+  .tools{gap:6px}.tool{font-size:12px;padding:8px 2px 6px}
+  .total .amt{font-size:52px}.result .won{font-size:44px}.result .who{font-size:28px}
+  .hand{gap:8px}.pc .big{font-size:24px}.pc .nm{font-size:14px}
+  .btns button{font-size:16px}.b-win{font-size:20px !important}
+  .two{gap:8px}
+}
+@media (max-height:560px){.total .amt{font-size:44px}.total{margin:6px 0 2px}}
 .sheet h3{margin:0 0 4px;font-size:21px}
 .sheet p{margin:0 0 14px;color:var(--muted)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
@@ -824,6 +838,31 @@ label{display:block;font-weight:700;margin:0 0 6px}
     if(playing) renderGame(false); else renderSetup();
     window.scrollTo(0,0);
   }
+  /* keep sheets above the on-screen keyboard (works in Chrome, Safari and in-app browsers like Messenger) */
+  function fitViewport(){
+    const vv = window.visualViewport, root = document.documentElement;
+    const h = vv ? vv.height : window.innerHeight, top = vv ? vv.offsetTop : 0;
+    root.style.setProperty("--vv-h", h + "px");
+    root.style.setProperty("--vv-top", top + "px");
+    const a = document.activeElement;
+    const typing = a && (a.tagName === "INPUT" || a.tagName === "TEXTAREA");
+    document.body.classList.toggle("kb", !!typing && h < window.innerHeight * 0.85 || !!typing && !vv);
+  }
+  if(window.visualViewport){
+    visualViewport.addEventListener("resize", fitViewport);
+    visualViewport.addEventListener("scroll", fitViewport);
+  }
+  window.addEventListener("resize", fitViewport);
+  document.addEventListener("focusin", e => {
+    fitViewport();
+    const el = e.target;
+    if(el.tagName !== "INPUT") return;
+    // after the keyboard opens, bring the field (and the buttons under it) into view
+    setTimeout(() => { fitViewport(); el.scrollIntoView({block:"center", behavior:"smooth"}); }, 300);
+  });
+  document.addEventListener("focusout", () => setTimeout(fitViewport, 100));
+  fitViewport();
+
   state = load(); show();
 })();
 </script>
