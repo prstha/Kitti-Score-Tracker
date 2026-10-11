@@ -56,7 +56,7 @@ input{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid v
 .tool.warn .ic{color:#FF9A8C}
 
 /* the table */
-.table{position:relative;border-radius:30px;padding:16px 16px 18px;
+.table{position:relative;border-radius:30px;padding:12px 12px 14px;
   background:radial-gradient(110% 80% at 50% 25%, #2A8460 0%, var(--felt) 45%, var(--felt-d) 100%);
   border:10px solid var(--wood);
   box-shadow:inset 0 0 0 2px rgba(0,0,0,.25), inset 0 0 40px rgba(0,0,0,.45), 0 0 0 2px var(--wood-d), 0 14px 30px rgba(0,0,0,.5);
@@ -67,23 +67,26 @@ input{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid v
 .trow{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .tpill{background:rgba(0,0,0,.25);border-radius:99px;padding:3px 12px;font-size:15px;font-weight:600}
 .tpill b{font-family:var(--display);font-weight:800;color:#fff}
-.total{text-align:center;margin:12px 0 4px}
+.total{text-align:center;margin:6px 0 2px}
 .total .lbl{font-size:15px;color:var(--soft)}
-.total .amt{font-family:var(--display);font-weight:800;font-size:64px;line-height:1.05;color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
+.total .amt{font-family:var(--display);font-weight:800;font-size:58px;line-height:1.02;color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
 .total .amt small{font-size:26px;color:var(--soft);margin-right:6px}
 .total .note{font-size:14px;color:var(--soft);min-height:1.3em}
 .total .note b{color:var(--gold)}
 .total.bump .amt,.result.bump .won{animation:bump .45s ease-out}
 @keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
-.seats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:14px}
-.seat{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.22);border-radius:14px;padding:7px 10px;min-width:0}
-.seat .ch{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:15px;color:#fff;
+.seats{display:grid;grid-template-columns:repeat(var(--sc,2),minmax(0,1fr));gap:6px;margin-top:10px}
+.seat{display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.22);border-radius:12px;padding:5px 8px;min-width:0}
+.seat .ch{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:13px;color:#fff;
   background:var(--c,#333);box-shadow:inset 0 0 0 3px rgba(255,255,255,.55), inset 0 0 0 5px var(--c,#333), 0 2px 0 rgba(0,0,0,.35)}
 .seat .tx{min-width:0;display:flex;flex-direction:column;line-height:1.2}
-.seat .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:15px}
-.seat .am{font-family:var(--display);font-weight:700;font-size:16px;color:#fff}
+.seat .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:14px}
+.seat .am{font-family:var(--display);font-weight:700;font-size:15px;color:#fff}
 .seat .lf{font-weight:500;font-size:12px;color:var(--soft);margin-left:4px}
 .seat.gone{opacity:.65}
+.seats.c3 .ch{display:none}
+.seats.c3 .seat{border-left:4px solid var(--c);padding-left:9px}
+.hand.n5 .pc .nm{font-size:11px;letter-spacing:-.2px}.hand.n5 .pc .mid{padding-left:2px;padding-right:2px}.hand.n5 .pc .big{font-size:19px}
 
 /* win result on the table */
 .result{text-align:center;padding:6px 0 2px}
@@ -102,25 +105,51 @@ input{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid v
 .trow2 b{font-family:var(--display)}
 .tnote{color:var(--muted);font-size:14px;margin-top:8px}
 
-/* cards */
-.pick{display:flex;justify-content:space-between;align-items:baseline;margin:22px 2px 12px}
-.pick h2{margin:0;font-size:20px}
-.hand{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.pc{position:relative;aspect-ratio:3/4;background:var(--cardbg);color:var(--cardink);border-radius:12px;
-  box-shadow:0 1px 0 rgba(0,0,0,.2),0 6px 16px rgba(0,0,0,.4);transition:transform .18s ease, box-shadow .18s ease;overflow:hidden}
-.pc::after{content:"";position:absolute;inset:5px;border:1px solid rgba(0,0,0,.08);border-radius:8px;pointer-events:none}
-.pc .cx{position:absolute;display:flex;flex-direction:column;align-items:center;line-height:1;font-family:var(--display);font-weight:800}
-.pc .cx .l{font-size:20px}.pc .cx .s{font-size:14px;margin-top:1px}
-.pc .tl{top:9px;left:10px}.pc .br{bottom:9px;right:10px;transform:rotate(180deg)}
-.pc .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 10px;text-align:center}
-.pc .big{font-size:30px;line-height:1}
-.pc .nm{font-weight:700;font-size:16px;line-height:1.15;margin-top:4px;color:var(--cardink);word-break:break-word}
+/* cards: small enough that 5 fit in one row */
+.pick{display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 8px}
+.pick h2{margin:0;font-size:19px}
+.hand{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,86px));justify-content:center;gap:8px;padding-top:8px}
+.pc{position:relative;aspect-ratio:5/7;padding:0;background:var(--cardbg);color:var(--cardink);border-radius:10px;
+  box-shadow:0 1px 0 rgba(0,0,0,.2),0 4px 10px rgba(0,0,0,.4);transition:transform .18s ease, box-shadow .18s ease;overflow:hidden}
+.pc::after{content:"";position:absolute;inset:4px;border:1px solid rgba(0,0,0,.08);border-radius:7px;pointer-events:none}
+.pc .cx{position:absolute;top:6px;left:7px;display:flex;flex-direction:column;align-items:center;line-height:1;font-family:var(--display);font-weight:800}
+.pc .cx .l{font-size:14px}.pc .cx .s{font-size:10px;margin-top:1px}
+.pc .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 5px 6px;text-align:center}
+.pc .big{font-size:22px;line-height:1}
+.pc .nm{font-weight:700;font-size:13px;line-height:1.1;margin-top:5px;color:var(--cardink);max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
 .pc.red{color:var(--red)}
-.pc[aria-checked="true"]{transform:translateY(-8px);box-shadow:0 0 0 3px var(--gold),0 14px 28px rgba(0,0,0,.55)}
-.pc .ribbon{position:absolute;left:0;right:0;bottom:0;background:var(--gold);color:var(--gold-ink);font-weight:800;font-size:13px;padding:2px 0;font-family:var(--display);display:none}
+.pc[aria-checked="true"]{transform:translateY(-6px);box-shadow:0 0 0 3px var(--gold),0 10px 20px rgba(0,0,0,.55)}
+.pc[aria-checked="true"] .mid{padding-bottom:18px}
+.pc .ribbon{position:absolute;left:0;right:0;bottom:0;background:var(--gold);color:var(--gold-ink);font-weight:800;font-size:11px;padding:1px 0;font-family:var(--display);display:none}
 .pc[aria-checked="true"] .ribbon{display:block}
-.pc[aria-checked="true"] .br{display:none}
-@media (prefers-reduced-motion: reduce){.pc{transition:none}.total.bump .amt{animation:none}}
+@media (prefers-reduced-motion: reduce){.pc{transition:none}.total.bump .amt{animation:none}.ov-card{animation:none}}
+
+/* kitti zone, between the cards and the scores */
+.kz{margin-top:16px;border-radius:18px;padding:12px;background:rgba(255,244,220,.06);border:1.5px dashed rgba(255,244,220,.35)}
+.kz-q{font-family:var(--display);font-weight:700;font-size:17px;margin:0 2px 2px}
+.kz-who{font-size:14px;color:var(--soft);margin:0 2px 8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chips button{border:1.5px solid rgba(255,244,220,.3);border-radius:99px;padding:3px 12px;font-size:14px;font-weight:600;color:var(--cream)}
+.chips button[aria-pressed="true"]{background:var(--cream);color:var(--felt-d);border-color:var(--cream)}
+.b-kitti{width:100%;display:flex;align-items:baseline;justify-content:center;gap:10px;background:var(--cream);color:var(--felt-d);font-family:var(--display);font-weight:800;font-size:23px;line-height:1.1;padding:11px 10px;box-shadow:0 3px 0 #BFAE84}
+.b-kitti small{font-family:var(--body);font-weight:600;font-size:14px;opacity:.75}
+.b-kitti:active{transform:translateY(2px);box-shadow:0 1px 0 #BFAE84}
+.deal{display:inline-block;margin-top:4px;background:rgba(255,244,220,.14);border-radius:99px;padding:2px 12px;font-size:14px;color:var(--cream)}
+.deal b{color:#fff}
+
+/* start-next-game overlay */
+.ov{position:fixed;left:0;right:0;top:var(--vv-top,0px);height:var(--vv-h,100dvh);z-index:9;background:rgba(4,10,7,.74);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:14px}
+.ov-card{position:relative;width:100%;max-width:420px;max-height:calc(var(--vv-h,100dvh) - 28px);overflow:auto;border-radius:24px;padding:16px 14px 12px;
+  background:radial-gradient(110% 80% at 50% 20%,#2A8460 0%,var(--felt) 50%,var(--felt-d) 100%);border:8px solid var(--wood);box-shadow:0 0 0 2px var(--wood-d),0 20px 50px rgba(0,0,0,.6);animation:pop .25s ease-out}
+@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
+.ov-x{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.28);font-size:17px;line-height:1;color:var(--cream)}
+.ov .result{padding-top:2px}
+.ov-sub{margin-top:14px;font-size:14px;color:var(--soft);text-align:center}
+.ov-tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.ov-tools button{background:rgba(0,0,0,.28);border:1px solid rgba(255,244,220,.22);padding:9px 6px;font-weight:600;font-size:15px;color:var(--cream)}
+.ov-tools button:disabled{opacity:.35}
+.ov .b-next{margin-top:12px}
+.ov-undo{display:block;margin:8px auto 0;color:var(--gold);font-weight:700;font-size:15px;padding:4px 10px}
 
 /* lower panels */
 .sec-title{margin:28px 2px 8px;font-size:18px}
@@ -144,23 +173,33 @@ details.sec[open] summary::after{content:"−"}
 .tagleft{font-size:13px;color:var(--muted);margin-left:6px}
 
 /* rail */
-#game .wrap{padding-bottom:calc(160px + env(safe-area-inset-bottom,0px))}
+#game .wrap{padding-bottom:calc(130px + env(safe-area-inset-bottom,0px))}
 .rail{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px));
   background:linear-gradient(180deg,var(--wood-l) 0%,var(--wood) 14%,var(--wood-d) 100%);box-shadow:0 -8px 24px rgba(0,0,0,.45)}
 .rail-in{max-width:560px;margin:0 auto}
 .rail .msg{font-size:15px;text-align:center;margin-bottom:8px;min-height:1.4em;color:var(--cream)}
 .rail .msg b{color:#fff}
-.btns{display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:8px}
+.btns{display:grid;grid-template-columns:1fr 1.6fr;gap:8px}
 .btns button{font-family:var(--display);font-weight:800;padding:10px 4px;line-height:1.1;font-size:18px}
 .btns small{display:block;font-family:var(--body);font-weight:600;font-size:12px;opacity:.85}
-.b-kitti{color:var(--cream);border:2px dashed rgba(255,244,220,.6) !important}
+.btns.three{grid-template-columns:1fr 1fr 1.4fr}
+.b-four{background:#5B3A8E;color:#fff;box-shadow:0 3px 0 #3A2260}
+.b-four:disabled{opacity:.4;box-shadow:none}
+.pick .rd{font-size:13px;font-weight:600;color:var(--soft);border:1px solid rgba(255,244,220,.25);border-radius:99px;padding:3px 10px;white-space:nowrap}
+.pick .rd:hover{background:rgba(255,244,220,.08)}
+.result .kind.four,.badge.f{background:#5B3A8E;color:#fff}
+.tog{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;border:1.5px solid var(--line) !important;padding:10px 12px;color:var(--ink)}
+.tog b{display:block;font-weight:700}.tog small{display:block;color:var(--muted);font-size:14px;font-weight:400}
+.sw{flex:none;width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;transition:background .15s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .15s}
+.tog[aria-checked="true"] .sw{background:var(--felt)}.tog[aria-checked="true"] .sw::after{transform:translateX(18px)}
 .b-salami{background:var(--red);color:#fff;box-shadow:0 3px 0 var(--red-d)}
 .b-win{background:var(--gold);color:var(--gold-ink);font-size:22px !important;box-shadow:0 3px 0 var(--gold-d)}
 .b-salami:disabled,.b-win:disabled{opacity:.4;box-shadow:none}
 .btns button:active:not(:disabled){transform:translateY(2px)}
 
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px));background:#0A0A0A;color:#fff;padding:10px 14px;border-radius:12px;
-  display:flex;gap:14px;align-items:center;justify-content:space-between;width:calc(100% - 28px);max-width:532px;z-index:6;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(120px + env(safe-area-inset-bottom,0px));background:#0A0A0A;color:#fff;padding:10px 14px;border-radius:12px;
+  display:flex;gap:14px;align-items:center;justify-content:space-between;width:calc(100% - 28px);max-width:532px;z-index:20;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .toast button{color:var(--gold);font-weight:700;padding:4px 6px;white-space:nowrap}
 
 /* setup */
@@ -193,7 +232,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   .wrap{padding:10px 10px 32px}
   .tools{gap:6px}.tool{font-size:12px;padding:8px 2px 6px}
   .total .amt{font-size:52px}.result .won{font-size:44px}.result .who{font-size:28px}
-  .hand{gap:8px}.pc .big{font-size:24px}.pc .nm{font-size:14px}
+  .hand{gap:6px}.pc .big{font-size:19px}.pc .nm{font-size:12px}
   .btns button{font-size:16px}.b-win{font-size:20px !important}
   .two{gap:8px}
 }
@@ -237,6 +276,10 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       <input id="potIn" type="number" inputmode="decimal" min="1" value="80">
       <div class="quick" id="quick"></div>
       <div class="hint" id="eachHint"></div>
+    </div>
+    <div class="field">
+      <label data-t="houseRules"></label>
+      <button type="button" class="tog" id="fourTog" role="switch" aria-checked="false"><span><b data-t="fourRule"></b><small data-t="fourRuleSub"></small></span><span class="sw"></span></button>
       <div class="err" id="setupErr"></div>
     </div>
     <button class="go" id="start" data-t="start"></button>
@@ -274,8 +317,14 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   </div>
 
   <div id="pickArea">
-    <div class="pick"><h2 id="pickTitle"></h2></div>
+    <div class="pick"><h2 id="pickTitle"></h2><button class="rd" id="redealBtn" data-t="redeal"></button></div>
     <div class="hand" id="hand" role="radiogroup"></div>
+    <div class="kz">
+      <div class="kz-q" data-t="kittiQ"></div>
+      <div class="kz-who" id="kzWho"></div>
+      <div class="chips" id="breakers" role="group"></div>
+      <button class="b-kitti" id="kittiBtn"></button>
+    </div>
   </div>
 
   <h2 class="sec-title" data-t="afterGame"></h2>
@@ -288,13 +337,26 @@ body.kb .rail,body.kb .toast{visibility:hidden}
    <div class="msg" id="railMsg"></div>
    <button class="b-next hidden" id="nextBtn" data-t="nextGame"></button>
    <div class="btns" id="playBtns">
-     <button class="b-kitti" id="kittiBtn"></button>
+     <button class="b-four hidden" id="fourBtn" disabled></button>
      <button class="b-salami" id="salamiBtn" disabled></button>
      <button class="b-win" id="winBtn" disabled></button>
    </div>
  </div></div>
  <div class="toast hidden" id="toast" role="status"><span id="toastMsg"></span><button id="toastUndo" data-t="undo"></button></div>
 </section>
+
+<!-- result + start next game -->
+<div class="ov hidden" id="ov" role="dialog" aria-modal="true" aria-labelledby="ovRes"><div class="ov-card">
+  <button class="ov-x" id="ovX">✕</button>
+  <div class="result" id="ovRes"></div>
+  <div class="ov-sub" data-t="ovSub"></div>
+  <div class="ov-tools">
+    <button id="ovAdd"></button>
+    <button id="ovLeave"></button>
+  </div>
+  <button class="b-next" id="ovNext" data-t="nextGame"></button>
+  <button class="ov-undo" id="ovUndo" data-t="undoRes"></button>
+</div></div>
 
 <!-- add player -->
 <div class="scrim hidden" id="sAdd" role="dialog" aria-modal="true" aria-labelledby="addT"><div class="sheet">
@@ -337,7 +399,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   const KEY = "kitti-scorekeeper-v3", OLDKEYS = ["kitti-scorekeeper-v2","kitti-scorekeeper-v1"], LKEY = "kitti-lang";
   const MIN = 2, MAX = 5, QUICK = [40, 80, 100, 200];
   const SUITS = [["♠",0,"#1E2A44"],["♥",1,"#C9372C"],["♦",1,"#D2691E"],["♣",0,"#2E5E3E"],["♠",0,"#5B3A8E"]];
-  let lang = "en", count = 4, draftNames = ["","","","",""], state = null, selected = null, leavePick = null, toastTimer = null;
+  let draftFour = false, lang = "en", count = 4, draftNames = ["","","","",""], state = null, selected = null, breaker = null, ovMin = false, leavePick = null, toastTimer = null;
   try{ lang = localStorage.getItem(LKEY) || "en"; }catch(e){}
 
   /* ---------- text ---------- */
@@ -351,8 +413,8 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       round:n=>"Game <b>"+n+"</b>", share:s=>"<b>Rs "+s+"</b> each", onTable:"Money on the table", rs:"Rs",
       noteKitti:(c,k)=>"<b>Rs "+c+"</b> carried from "+k+" Kitti "+(k==1?"game":"games"), noteNew:p=>"Pot Rs "+p+" this game",
       pickTitle:n=>"Who won game "+n+"?",
-      kitti:"Kitti", kittiSub:"No winner", salami:"Salami", salamiSub:"3 of 3 hands", win:"Win", winnerTag:"Winner",
-      railIdle:"Tap the winner's card, or Kitti", railSel:(n,w,s)=>"<b>"+n+"</b> takes Rs "+w+" on a win, Rs "+s+" on a Salami",
+      kitti:"Kitti", kittiSub:"Money stays on the table", salami:"Salami", salamiSub:"3 of 3 hands", win:"Win", winnerTag:"Winner",
+      railIdle:"Tap the winner's card", railSel:(n,w,s)=>"<b>"+n+"</b> takes Rs "+w+" on a win, Rs "+s+" on a Salami",
       resGame:n=>"Game "+n+" result", resWon:"won", fromP:n=>"From "+n, nextGame:"Start next game", railWait:"Settle this game, then start the next one",
       afterGame:"After the game", scoresTitle:"Scores and settle up", scores:"Scores", whoPays:"Who pays whom",
       pays:(a,b)=>a+" pays "+b, square:"Everyone is square.", stillTable:"Still on the table", settled:"settled",
@@ -363,6 +425,15 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       tKitti:(r,x)=>"Game "+r+": Kitti. Rs "+x+" stays on the table.", tWin:(r,n,x)=>"Game "+r+": "+n+" won Rs "+x+".", tSalami:(r,n,x)=>"Game "+r+": "+n+" Salami, Rs "+x+".",
       tJoin:(n,p)=>n+" joined. Pot is now Rs "+p+".", tLeave:n=>n+" settled up and left.", tPot:p=>"Pot is now Rs "+p+" per game.", tNext:n=>"Game "+n+" started.",
       undo:"Undo", rulesTitle:"How the money works",
+      houseRules:"House rules", fourRule:"Four of a kind wins instantly", fourRuleSub:"Paid the same as a normal win.",
+      four:"4 of a kind", fourSub:"Instant win", tFour:(r,n,x)=>"Game "+r+": "+n+" had four of a kind, Rs "+x+".",
+      redeal:"Four pairs? Redeal", tRedeal:n=>"Four pairs. Cards redealt for game "+n+". No change to the money.", evRedeal:"Four pairs, cards redealt",
+      rFour:"<li><b>Four of a kind</b> (house rule, on): instant win, paid the same as a normal win.</li>",
+      rRedeal:"<li><b>Four pairs</b>: the player can save the game. The cards are dealt again, with no extra money and no change to the table.</li>",
+      kittiQ:"Nobody won 2 hands?", kittiWho:"Who broke the run? Optional. They deal the next game.",
+      deals:n=>"<b>"+n+"</b> deals this game", logBy:n=>"Broken by "+n+".",
+      tKittiBy:(r,x,n)=>"Game "+r+": Kitti by "+n+". Rs "+x+" stays on the table.",
+      ovSub:"Anyone joining or leaving? Do it before the next game.", undoRes:"Undo this result", hide:"Hide",
       rules:s=>"<p>Every player puts an equal share on the table each game. Right now that is Rs "+s+".</p><ul>"+
         "<li><b>Win</b> (2 of 3 hands): the winner takes all the money on the table.</li>"+
         "<li><b>Salami</b> (3 of 3 hands): the winner takes the table, and every loser pays one extra share.</li>"+
@@ -389,8 +460,8 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       round:n=>"खेल <b>"+n+"</b>", share:s=>"हरेकको <b>रु "+s+"</b>", onTable:"टेबलमा रहेको पैसा", rs:"रु",
       noteKitti:(c,k)=>k+" किट्टी खेलबाट <b>रु "+c+"</b> सरेको", noteNew:p=>"यो खेलको पोट रु "+p,
       pickTitle:n=>"खेल "+n+" कसले जित्यो?",
-      kitti:"किट्टी", kittiSub:"कसैले जितेन", salami:"सलामी", salamiSub:"३ मध्ये ३ हात", win:"जित", winnerTag:"विजेता",
-      railIdle:"विजेताको पत्ती थिच्नुहोस्, वा किट्टी", railSel:(n,w,s)=>"<b>"+n+"</b> ले जितमा रु "+w+", सलामीमा रु "+s+" पाउँछ",
+      kitti:"किट्टी", kittiSub:"पैसा टेबलमै रहन्छ", salami:"सलामी", salamiSub:"३ मध्ये ३ हात", win:"जित", winnerTag:"विजेता",
+      railIdle:"विजेताको पत्ती थिच्नुहोस्", railSel:(n,w,s)=>"<b>"+n+"</b> ले जितमा रु "+w+", सलामीमा रु "+s+" पाउँछ",
       resGame:n=>"खेल "+n+" को नतिजा", resWon:"ले जित्यो", fromP:n=>n+" बाट", nextGame:"अर्को खेल सुरु गर्नुहोस्", railWait:"यो खेलको हिसाब मिलाएर अर्को खेल सुरु गर्नुहोस्",
       afterGame:"खेलपछि", scoresTitle:"स्कोर र हिसाब मिलान", scores:"स्कोर", whoPays:"कसले कसलाई तिर्ने",
       pays:(a,b)=>a+" ले "+b+" लाई तिर्ने", square:"सबैको हिसाब बराबर छ।", stillTable:"अझै टेबलमा", settled:"हिसाब मिल्यो",
@@ -401,6 +472,15 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       tKitti:(r,x)=>"खेल "+r+": किट्टी। रु "+x+" टेबलमै रहन्छ।", tWin:(r,n,x)=>"खेल "+r+": "+n+" ले रु "+x+" जित्यो।", tSalami:(r,n,x)=>"खेल "+r+": "+n+" को सलामी, रु "+x+"।",
       tJoin:(n,p)=>n+" थपियो। अब पोट रु "+p+"।", tLeave:n=>n+" ले हिसाब मिलाएर छोड्यो।", tPot:p=>"अब पोट प्रति खेल रु "+p+"।", tNext:n=>"खेल "+n+" सुरु भयो।",
       undo:"फिर्ता", rulesTitle:"पैसाको हिसाब कसरी हुन्छ",
+      houseRules:"घरको नियम", fourRule:"चार एउटै पत्ती भए तुरुन्तै जित", fourRuleSub:"सामान्य जितजस्तै भुक्तानी।",
+      four:"चार एउटै", fourSub:"तुरुन्त जित", tFour:(r,n,x)=>"खेल "+r+": "+n+" सँग चार एउटै पत्ती, रु "+x+"।",
+      redeal:"चार जोडी? फेरि बाँड्ने", tRedeal:n=>"चार जोडी। खेल "+n+" का लागि पत्ती फेरि बाँडियो। पैसामा केही फरक छैन।", evRedeal:"चार जोडी, पत्ती फेरि बाँडियो",
+      rFour:"<li><b>चार एउटै पत्ती</b> (घरको नियम, चालु): तुरुन्तै जित, सामान्य जितजस्तै भुक्तानी।</li>",
+      rRedeal:"<li><b>चार जोडी</b>: खेलाडीले खेल बचाउन सक्छ। पत्ती फेरि बाँडिन्छ, थप पैसा लाग्दैन र टेबलमा केही फरक पर्दैन।</li>",
+      kittiQ:"कसैले २ हात जितेन?", kittiWho:"क्रम कसले तोड्यो? ऐच्छिक। उसले अर्को खेलमा पत्ती बाँड्छ।",
+      deals:n=>"<b>"+n+"</b> ले यो खेलमा पत्ती बाँड्छ", logBy:n=>n+" ले तोड्यो।",
+      tKittiBy:(r,x,n)=>"खेल "+r+": "+n+" ले किट्टी पार्‍यो। रु "+x+" टेबलमै रहन्छ।",
+      ovSub:"कोही थपिँदै वा छोड्दै हुनुहुन्छ? अर्को खेलअघि नै गर्नुहोस्।", undoRes:"यो नतिजा फिर्ता", hide:"लुकाउने",
       rules:s=>"<p>हरेक खेलमा सबै खेलाडीले बराबर भाग टेबलमा राख्छन्। अहिले त्यो रु "+s+" हो।</p><ul>"+
         "<li><b>जित</b> (३ मध्ये २ हात): टेबलको सबै पैसा विजेताले लिन्छ।</li>"+
         "<li><b>सलामी</b> (३ मध्ये ३ हात): विजेताले टेबलको पैसा लिन्छ, र हरेक हार्नेले एक भाग थप तिर्छ।</li>"+
@@ -430,6 +510,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   const $ = id => document.getElementById(id);
   const seatedIdx = () => state.seated.map((v,i)=>v?i:-1).filter(i=>i>=0);
   const potNow = () => state.share * seatedIdx().length;
+  const fourOn = () => !!(state && state.rules && state.rules.four);
 
   /* ---------- storage ---------- */
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
@@ -521,7 +602,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       applyEvents(i);
       r.seated.forEach(p => put[p] += r.share);
       const table = put.reduce((a,b)=>a+b,0);
-      if(r.type === "kitti"){ kittis++; log.push({i, type:"kitti", table}); return; }
+      if(r.type === "kitti"){ kittis++; log.push({i, type:"kitti", table, breaker: r.breaker == null ? null : r.breaker}); return; }
       let total = 0, maxEach = 0; const pays = [];
       for(let p = 0; p < P; p++){
         if(p === r.winner) continue;
@@ -585,6 +666,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       box.appendChild(inp);
     }
     $("count").textContent = digits(count);
+    $("fourTog").setAttribute("aria-checked", draftFour);
     $("minus").disabled = count <= MIN; $("plus").disabled = count >= MAX;
     updatePot();
   }
@@ -597,6 +679,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   $("minus").onclick = () => { if(count > MIN){ count--; renderSetup(); } };
   $("plus").onclick = () => { if(count < MAX){ count++; renderSetup(); } };
   $("potIn").oninput = updatePot;
+  $("fourTog").onclick = () => { draftFour = !draftFour; $("fourTog").setAttribute("aria-checked", draftFour); };
   $("start").onclick = () => {
     const pot = parseFloat($("potIn").value);
     if(!(pot > 0)){ $("setupErr").textContent = t("errPot"); return; }
@@ -604,7 +687,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     for(let i = 0; i < count; i++) names.push((draftNames[i] || "").trim() || T.en.player(i+1));
     const low = names.map(n => n.toLowerCase());
     if(new Set(low).size !== low.length){ $("setupErr").textContent = t("errNames"); return; }
-    state = {players:names, seated:names.map(()=>true), share:pot/names.length, rounds:[], events:[], waiting:false, actions:[]};
+    state = {players:names, seated:names.map(()=>true), share:pot/names.length, rounds:[], events:[], waiting:false, actions:[], rules:{four:draftFour}};
     selected = null; save(); show();
   };
 
@@ -621,24 +704,32 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     $("total").classList.toggle("hidden", waiting);
     $("seats").classList.toggle("hidden", waiting);
     $("result").classList.toggle("hidden", !waiting);
+    let resHTML = "";
     if(waiting){
       const e = g.log[g.log.length - 1];
-      $("result").innerHTML =
+      resHTML =
         '<div class="trophy">'+t("resGame")(rnd)+'</div>'+
         '<div class="who">'+esc(names[e.winner])+' '+(lang==="ne"?t("resWon"):t("resWon"))+'</div>'+
         '<div class="won"><small>'+t("rs")+'</small>'+fmt(e.total)+'</div>'+
-        (e.type==="salami" ? '<span class="kind">'+t("salami")+'</span>' : '')+
+        (e.type==="salami" ? '<span class="kind">'+t("salami")+'</span>' : e.type==="four" ? '<span class="kind four">'+t("four")+'</span>' : '')+
         '<div class="paylist">'+e.pays.map(x => '<div class="payrow"><span>'+esc(t("fromP")(names[x.p]))+'</span><b>'+t("rs")+' '+fmt(x.pay)+'</b></div>').join("")+'</div>';
+      $("result").innerHTML = resHTML;
     } else {
       $("potAmt").textContent = fmt(g.table);
       $("note").innerHTML = g.carry > 0.004 ? t("noteKitti")(fmt(g.carry), digits(g.kittis)) : t("noteNew")(fmt(g.table));
+      // whoever broke the last Kitti deals this game
+      const last = g.log[g.log.length - 1];
+      if(last && last.type === "kitti" && last.breaker != null && state.seated[last.breaker])
+        $("note").innerHTML += '<br><span class="deal">'+t("deals")(esc(names[last.breaker]))+'</span>';
       let seats = "";
       g.seated.forEach(i => {
         const n = names[i], c = SUITS[i % SUITS.length][2];
-        seats += '<div class="seat"><span class="ch" style="--c:'+c+'">'+esc(n.charAt(0).toUpperCase())+'</span>'+
+        seats += '<div class="seat" style="--c:'+c+'"><span class="ch">'+esc(n.charAt(0).toUpperCase())+'</span>'+
                  '<span class="tx"><span class="nm">'+esc(n)+'</span><span class="am">'+t("rs")+' '+fmt(g.onTable[i])+'</span></span></div>';
       });
       $("seats").innerHTML = seats;
+      const three = g.seated.length === 3 || g.seated.length === 5;
+      $("seats").style.setProperty("--sc", three ? 3 : 2); $("seats").classList.toggle("c3", three);
     }
     if(bump){ const m = waiting ? $("result") : $("total"); m.classList.remove("bump"); void m.offsetWidth; m.classList.add("bump"); }
 
@@ -647,28 +738,53 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     if(selected !== null && !state.seated[selected]) selected = null;
     $("pickTitle").textContent = t("pickTitle")(rnd);
     const hand = $("hand"); hand.innerHTML = ""; hand.setAttribute("aria-label", t("pickTitle")(rnd));
+    hand.style.setProperty("--n", g.seated.length); hand.classList.toggle("n5", g.seated.length >= 5);
     g.seated.forEach(i => {
       const n = names[i], [sym, red] = SUITS[i % SUITS.length], L = esc(n.charAt(0).toUpperCase());
       const c = document.createElement("button");
       c.className = "pc" + (red ? " red" : ""); c.setAttribute("role","radio"); c.setAttribute("aria-checked", selected === i); c.setAttribute("aria-label", n);
       c.innerHTML = '<span class="cx tl"><span class="l">'+L+'</span><span class="s">'+sym+'</span></span>'+
         '<span class="mid"><span class="big">'+sym+'</span><span class="nm">'+esc(n)+'</span></span>'+
-        '<span class="cx br"><span class="l">'+L+'</span><span class="s">'+sym+'</span></span><span class="ribbon">'+t("winnerTag")+'</span>';
+        '<span class="ribbon">'+t("winnerTag")+'</span>';
       c.onclick = () => { selected = selected === i ? null : i; renderGame(false); };
       hand.appendChild(c);
     });
 
+    // kitti zone: optional "who broke the run"
+    if(breaker !== null && !state.seated[breaker]) breaker = null;
+    $("kzWho").textContent = t("kittiWho");
+    const bx = $("breakers"); bx.innerHTML = "";
+    bx.setAttribute("aria-label", t("kittiWho"));
+    g.seated.forEach(i => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = names[i]; b.setAttribute("aria-pressed", breaker === i);
+      b.onclick = () => { breaker = breaker === i ? null : i; renderGame(false); };
+      bx.appendChild(b);
+    });
+    $("kittiBtn").innerHTML = t("kitti") + "<small>" + t("kittiSub") + "</small>";
+
     $("tAdd").disabled = g.seated.length >= MAX;
     $("tLeave").disabled = g.seated.length <= MIN;
+
+    // overlay after a win: result, join/leave, start next game
+    $("ov").classList.toggle("hidden", !waiting || ovMin);
+    if(waiting){
+      $("ovRes").innerHTML = resHTML;
+      $("ovAdd").textContent = "+ " + t("toolAdd"); $("ovAdd").disabled = g.seated.length >= MAX;
+      $("ovLeave").textContent = "⇥ " + t("toolLeave"); $("ovLeave").disabled = g.seated.length <= MIN;
+      $("ovX").setAttribute("aria-label", t("hide"));
+    }
 
     // rail
     $("nextBtn").classList.toggle("hidden", !waiting);
     $("playBtns").classList.toggle("hidden", waiting);
-    $("kittiBtn").innerHTML = t("kitti") + "<small>" + t("kittiSub") + "</small>";
+    $("fourBtn").classList.toggle("hidden", !fourOn());
+    $("playBtns").classList.toggle("three", fourOn());
+    $("fourBtn").innerHTML = t("four") + "<small>" + t("fourSub") + "</small>";
     $("salamiBtn").innerHTML = t("salami") + "<small>" + t("salamiSub") + "</small>";
     $("winBtn").textContent = t("win");
     const has = selected !== null;
-    $("winBtn").disabled = !has; $("salamiBtn").disabled = !has;
+    $("winBtn").disabled = !has; $("salamiBtn").disabled = !has; $("fourBtn").disabled = !has;
     if(waiting) $("railMsg").textContent = t("railWait");
     else if(has){ const pv = g.preview(selected); $("railMsg").innerHTML = t("railSel")(esc(names[selected]), fmt(pv.win), fmt(pv.sal)); }
     else $("railMsg").textContent = t("railIdle");
@@ -689,42 +805,61 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     // history
     const items = [];
     g.log.forEach(e => items.push({at:e.i, o:1, html: e.type === "kitti"
-      ? '<div class="r"><div class="no">'+digits(e.i+1)+'</div><div><div class="what">'+t("logKitti")+'<span class="badge k">'+t("rs")+' '+fmt(e.table)+'</span></div><div class="detail">'+t("logKittiD")(fmt(e.table))+'</div></div></div>'
-      : '<div class="r"><div class="no">'+digits(e.i+1)+'</div><div><div class="what">'+esc(t("logWon")(names[e.winner]))+(e.type==="salami"?'<span class="badge s">'+t("salami")+'</span>':'')+'</div><div class="detail">'+t("logD")(fmt(e.each), fmt(e.total))+'</div></div></div>'}));
+      ? '<div class="r"><div class="no">'+digits(e.i+1)+'</div><div><div class="what">'+t("logKitti")+'<span class="badge k">'+t("rs")+' '+fmt(e.table)+'</span></div><div class="detail">'+t("logKittiD")(fmt(e.table))+(e.breaker != null ? ' '+esc(t("logBy")(names[e.breaker])) : '')+'</div></div></div>'
+      : '<div class="r"><div class="no">'+digits(e.i+1)+'</div><div><div class="what">'+esc(t("logWon")(names[e.winner]))+(e.type==="salami"?'<span class="badge s">'+t("salami")+'</span>':e.type==="four"?'<span class="badge f">'+t("four")+'</span>':'')+'</div><div class="detail">'+t("logD")(fmt(e.each), fmt(e.total))+'</div></div></div>'}));
     state.events.forEach((e, k) => {
       let txt;
       if(e.type === "join") txt = t("evJoin")(names[e.p]);
       else if(e.type === "leave"){ const x = (g.leaveInfo[k]||{}).total || 0; txt = x > 0.004 ? t("evLeave")(names[e.p], fmt(x)) : x < -0.004 ? t("evLeaveR")(names[e.p], fmt(-x)) : t("evLeave0")(names[e.p]); }
+      else if(e.type === "redeal") txt = t("evRedeal");
       else txt = t("evPot")(fmt(e.pot), fmt(e.share));
       items.push({at:e.before, o:0, k, html:'<div class="r"><div class="no"></div><div><span class="badge i">'+esc(txt)+'</span></div></div>'});
     });
     items.sort((a,b) => b.at - a.at || b.o - a.o || (b.k||0) - (a.k||0));
     $("log").innerHTML = items.length ? items.map(x=>x.html).join("") : '<div class="empty">'+t("noRounds")+'</div>';
-    $("rules").innerHTML = t("rules")(fmt(g.S));
+    $("rules").innerHTML = t("rules")(fmt(g.S)).replace("</ul>", (fourOn() ? t("rFour") : "") + t("rRedeal") + "</ul>");
   }
 
   function record(type){
     const g = compute(state), names = state.players, r = digits(state.rounds.length + 1);
     let msg;
-    if(type === "kitti") msg = t("tKitti")(r, fmt(g.table));
-    else { const pv = g.preview(selected); msg = type === "salami" ? t("tSalami")(r, names[selected], fmt(pv.sal)) : t("tWin")(r, names[selected], fmt(pv.win)); }
-    state.rounds.push({type, winner: type === "kitti" ? null : selected, share: state.share, seated: seatedIdx()});
+    if(type === "kitti") msg = breaker !== null ? t("tKittiBy")(r, fmt(g.table), names[breaker]) : t("tKitti")(r, fmt(g.table));
+    else { const pv = g.preview(selected); msg = type === "salami" ? t("tSalami")(r, names[selected], fmt(pv.sal)) : type === "four" ? t("tFour")(r, names[selected], fmt(pv.win)) : t("tWin")(r, names[selected], fmt(pv.win)); }
+    const round = {type, winner: type === "kitti" ? null : selected, share: state.share, seated: seatedIdx()};
+    if(type === "kitti" && breaker !== null) round.breaker = breaker;
+    state.rounds.push(round);
     state.waiting = type !== "kitti"; act("round");
-    selected = null; save(); renderGame(true); toast(msg);
+    selected = null; breaker = null; ovMin = false; save(); renderGame(true);
+    if(type === "kitti") toast(msg); else $("toast").classList.add("hidden");   // the overlay shows the result
     window.scrollTo({top:0, behavior:"smooth"});
   }
   $("winBtn").onclick = () => { if(selected !== null) record("win"); };
   $("salamiBtn").onclick = () => { if(selected !== null) record("salami"); };
-  $("kittiBtn").onclick = () => record("kitti");
-  $("nextBtn").onclick = () => {
-    state.waiting = false; act("next"); save(); renderGame(true);
-    toast(t("tNext")(digits(state.rounds.length + 1)));
+  $("fourBtn").onclick = () => { if(selected !== null && fourOn()) record("four"); };
+  // four pairs: the deal is skipped and redone. No money moves and the game number stays the same.
+  $("redealBtn").onclick = () => {
+    state.events.push({type:"redeal", before:state.rounds.length}); act("event");
+    selected = null; breaker = null; save(); renderGame(false);
+    toast(t("tRedeal")(digits(state.rounds.length + 1)));
   };
+  $("kittiBtn").onclick = () => record("kitti");
+  function startNext(){
+    state.waiting = false; ovMin = false; act("next"); save(); renderGame(true);
+    toast(t("tNext")(digits(state.rounds.length + 1)));
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+  $("nextBtn").onclick = startNext;
+  $("ovNext").onclick = startNext;
+  $("ovX").onclick = () => { ovMin = true; renderGame(false); };
+  $("ovUndo").onclick = () => undo();
+  $("ovAdd").onclick = () => $("tAdd").click();
+  $("ovLeave").onclick = () => $("tLeave").click();
 
   /* one undo for the most recent action: a game, starting the next game, join, leave or pot change */
   function act(kind){ (state.actions = state.actions || []).push(kind); }
   function undo(){
     const a = (state.actions || []).pop();
+    ovMin = false;
     if(a === "next") state.waiting = true;
     else if(a === "round"){ state.rounds.pop(); state.waiting = false; }
     else if(a === "event"){
@@ -825,6 +960,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     const seated = seatedIdx().map(i => state.players[i]);
     draftNames = seated.concat(["","","","",""]).slice(0, MAX);
     count = Math.max(MIN, Math.min(seated.length, MAX)); $("potIn").value = r2(potNow());
+    draftFour = !!(state.rules && state.rules.four);
     state = null; selected = null; $("toast").classList.add("hidden");
     try{ localStorage.removeItem(KEY); OLDKEYS.forEach(k => localStorage.removeItem(k)); }catch(e){}
     show();
