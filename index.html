@@ -11,8 +11,9 @@
 <style>
 :root{
   --room:#0F1D17; --room-2:#15271F;
-  --felt:#1F6B4C; --felt-d:#134A34; --wood:#7A4520; --wood-d:#4A2710; --wood-l:#A0622E;
-  --gold:#F2B53A; --gold-d:#B07A16; --gold-ink:#3A2606; --red:#C9372C; --red-d:#7E2318;
+  --felt:#1F6B4C; --felt-d:#134A34; --wood:#161616; --wood-d:#000000; --wood-l:#2E2E2E;
+  --prime:#22A06B; --prime-d:#126B43; --black:#141414;
+  --gold:#FF6B5E; --gold-d:#9E2A20; --gold-ink:#FFFFFF; --red:#D7372B; --red-d:#801E16;
   --cream:#FFF4DC; --soft:rgba(255,244,220,.72);
   --cardbg:#FFFFFF; --cardink:#1B1B1B;
   --panel:#FFFFFF; --ink:#17211D; --muted:#5B6B64; --line:#DCE3DF; --gain:#1F7A47; --loss:#B3261E;
@@ -34,7 +35,7 @@ body{margin:0;min-height:100%;color:var(--cream);font-family:var(--body);font-si
 h1,h2,h3,.num{font-family:var(--display)}
 button{font:inherit;cursor:pointer;border:0;border-radius:12px;color:inherit;background:none}
 button:disabled{cursor:not-allowed}
-button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #fff;outline-offset:2px}
 input{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
 .hidden{display:none !important}
 .pos{color:var(--gain)} .neg{color:var(--loss)} .zero{color:var(--muted)}
@@ -72,33 +73,24 @@ input{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid v
 .total .amt{font-family:var(--display);font-weight:800;font-size:58px;line-height:1.02;color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
 .total .amt small{font-size:26px;color:var(--soft);margin-right:6px}
 .total .note{font-size:14px;color:var(--soft);min-height:1.3em}
-.total .note b{color:var(--gold)}
+.total .note b{color:#fff}
 .total.bump .amt,.result.bump .won{animation:bump .45s ease-out}
 @keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
-.seats{display:grid;grid-template-columns:repeat(var(--sc,2),minmax(0,1fr));gap:6px;margin-top:10px}
-.seat{display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.22);border-radius:12px;padding:5px 8px;min-width:0}
-.seat .ch{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:13px;color:#fff;
-  background:var(--c,#333);box-shadow:inset 0 0 0 3px rgba(255,255,255,.55), inset 0 0 0 5px var(--c,#333), 0 2px 0 rgba(0,0,0,.35)}
-.seat .tx{min-width:0;display:flex;flex-direction:column;line-height:1.2}
-.seat .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:14px}
-.seat .am{font-family:var(--display);font-weight:700;font-size:15px;color:#fff}
-.seat .lf{font-weight:500;font-size:12px;color:var(--soft);margin-left:4px}
-.seat.gone{opacity:.65}
-.seats.c3 .ch{display:none}
-.seats.c3 .seat{border-left:4px solid var(--c);padding-left:9px}
-.hand.n5 .pc .nm{font-size:11px;letter-spacing:-.2px}.hand.n5 .pc .mid{padding-left:2px;padding-right:2px}.hand.n5 .pc .big{font-size:19px}
+.hand.n5 .pc .nm{font-size:11px;letter-spacing:-.2px}.hand.n5 .pc .mid{padding-left:2px;padding-right:2px}.hand.n5 .pc .big{display:none}.hand.n5 .pc .amt{font-size:12px}
 
 /* win result on the table */
 .result{text-align:center;padding:6px 0 2px}
 .result .trophy{font-size:15px;color:var(--soft)}
 .result .who{font-family:var(--display);font-weight:800;font-size:34px;line-height:1.1;color:#fff;margin-top:2px}
-.result .won{font-family:var(--display);font-weight:800;font-size:52px;line-height:1.05;color:var(--gold);text-shadow:0 3px 0 rgba(0,0,0,.3)}
+.result .won{font-family:var(--display);font-weight:800;font-size:52px;line-height:1.05;color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.3)}
 .result .won small{font-size:24px;margin-right:6px;opacity:.85}
 .result .kind{display:inline-block;background:var(--red);color:#fff;border-radius:99px;padding:0 10px;font-size:14px;font-weight:700;margin-top:4px}
 .paylist{margin-top:12px;display:grid;gap:6px;text-align:left}
 .payrow{display:flex;justify-content:space-between;background:rgba(0,0,0,.22);border-radius:12px;padding:6px 12px;font-size:15px}
 .payrow b{font-family:var(--display);color:#fff}
-.b-next{width:100%;background:var(--gold);color:var(--gold-ink);font-family:var(--display);font-weight:800;font-size:21px;padding:13px;box-shadow:0 3px 0 var(--gold-d)}
+.b-next{width:100%;background:var(--prime);color:#fff;font-family:var(--display);font-weight:800;font-size:21px;padding:13px;box-shadow:0 3px 0 var(--prime-d)}
+.b-wrap{width:100%;background:var(--black);color:#fff;border:1.5px solid rgba(255,255,255,.28);font-family:var(--display);font-weight:800;font-size:19px;padding:12px;line-height:1.1}
+.b-wrap small{display:block;font-family:var(--body);font-weight:600;font-size:12px;opacity:.8}
 .b-next:active{transform:translateY(2px)}
 .tlist{margin-top:10px;display:grid;gap:6px}
 .trow2{display:flex;justify-content:space-between;gap:10px;border:1.5px solid var(--line);border-radius:12px;padding:8px 12px}
@@ -106,9 +98,10 @@ input{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid v
 .tnote{color:var(--muted);font-size:14px;margin-top:8px}
 
 /* cards: small enough that 5 fit in one row */
-.pick{display:flex;justify-content:space-between;align-items:baseline;margin:18px 2px 8px}
-.pick h2{margin:0;font-size:19px}
-.hand{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,86px));justify-content:center;gap:8px;padding-top:8px}
+.pick{display:flex;justify-content:space-between;align-items:baseline;margin:12px 2px 2px}
+.pick h2{margin:0;font-size:16px;color:var(--soft);font-weight:700}
+.hand{display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,86px));justify-content:center;gap:8px;padding-top:10px}
+.taphint{font-size:13px;color:var(--soft);text-align:center;margin-top:10px}
 .pc{position:relative;aspect-ratio:5/7;padding:0;background:var(--cardbg);color:var(--cardink);border-radius:10px;
   box-shadow:0 1px 0 rgba(0,0,0,.2),0 4px 10px rgba(0,0,0,.4);transition:transform .18s ease, box-shadow .18s ease;overflow:hidden}
 .pc::after{content:"";position:absolute;inset:4px;border:1px solid rgba(0,0,0,.08);border-radius:7px;pointer-events:none}
@@ -117,23 +110,14 @@ input{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid v
 .pc .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 5px 6px;text-align:center}
 .pc .big{font-size:22px;line-height:1}
 .pc .nm{font-weight:700;font-size:13px;line-height:1.1;margin-top:5px;color:var(--cardink);max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:anywhere}
+.pc .amt{font-family:var(--display);font-weight:800;font-size:14px;line-height:1.1;margin-top:3px;color:var(--cardink);opacity:.8;white-space:nowrap}
 .pc.red{color:var(--red)}
-.pc[aria-checked="true"]{transform:translateY(-6px);box-shadow:0 0 0 3px var(--gold),0 10px 20px rgba(0,0,0,.55)}
+.pc[aria-checked="true"]{transform:translateY(-6px);box-shadow:0 0 0 3px var(--red),0 10px 20px rgba(0,0,0,.55)}
 .pc[aria-checked="true"] .mid{padding-bottom:18px}
-.pc .ribbon{position:absolute;left:0;right:0;bottom:0;background:var(--gold);color:var(--gold-ink);font-weight:800;font-size:11px;padding:1px 0;font-family:var(--display);display:none}
+.pc .ribbon{position:absolute;left:0;right:0;bottom:0;background:var(--red);color:#fff;font-weight:800;font-size:11px;padding:1px 0;font-family:var(--display);display:none}
 .pc[aria-checked="true"] .ribbon{display:block}
 @media (prefers-reduced-motion: reduce){.pc{transition:none}.total.bump .amt{animation:none}.ov-card{animation:none}}
 
-/* kitti zone, between the cards and the scores */
-.kz{margin-top:16px;border-radius:18px;padding:12px;background:rgba(255,244,220,.06);border:1.5px dashed rgba(255,244,220,.35)}
-.kz-q{font-family:var(--display);font-weight:700;font-size:17px;margin:0 2px 2px}
-.kz-who{font-size:14px;color:var(--soft);margin:0 2px 8px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.chips button{border:1.5px solid rgba(255,244,220,.3);border-radius:99px;padding:3px 12px;font-size:14px;font-weight:600;color:var(--cream)}
-.chips button[aria-pressed="true"]{background:var(--cream);color:var(--felt-d);border-color:var(--cream)}
-.b-kitti{width:100%;display:flex;align-items:baseline;justify-content:center;gap:10px;background:var(--cream);color:var(--felt-d);font-family:var(--display);font-weight:800;font-size:23px;line-height:1.1;padding:11px 10px;box-shadow:0 3px 0 #BFAE84}
-.b-kitti small{font-family:var(--body);font-weight:600;font-size:14px;opacity:.75}
-.b-kitti:active{transform:translateY(2px);box-shadow:0 1px 0 #BFAE84}
 .deal{display:inline-block;margin-top:4px;background:rgba(255,244,220,.14);border-radius:99px;padding:2px 12px;font-size:14px;color:var(--cream)}
 .deal b{color:#fff}
 
@@ -149,6 +133,7 @@ input{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid v
 .ov-tools button{background:rgba(0,0,0,.28);border:1px solid rgba(255,244,220,.22);padding:9px 6px;font-weight:600;font-size:15px;color:var(--cream)}
 .ov-tools button:disabled{opacity:.35}
 .ov .b-next{margin-top:12px}
+.ov .b-wrap{margin-top:8px}
 .ov-undo{display:block;margin:8px auto 0;color:var(--gold);font-weight:700;font-size:15px;padding:4px 10px}
 
 /* lower panels */
@@ -175,7 +160,7 @@ details.sec[open] summary::after{content:"−"}
 /* rail */
 #game .wrap{padding-bottom:calc(130px + env(safe-area-inset-bottom,0px))}
 .rail{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px));
-  background:linear-gradient(180deg,var(--wood-l) 0%,var(--wood) 14%,var(--wood-d) 100%);box-shadow:0 -8px 24px rgba(0,0,0,.45)}
+  background:linear-gradient(180deg,#262626 0%,#161616 14%,#080808 100%);border-top:3px solid var(--red);box-shadow:0 -8px 24px rgba(0,0,0,.45)}
 .rail-in{max-width:560px;margin:0 auto}
 .rail .msg{font-size:15px;text-align:center;margin-bottom:8px;min-height:1.4em;color:var(--cream)}
 .rail .msg b{color:#fff}
@@ -183,18 +168,22 @@ details.sec[open] summary::after{content:"−"}
 .btns button{font-family:var(--display);font-weight:800;padding:10px 4px;line-height:1.1;font-size:18px}
 .btns small{display:block;font-family:var(--body);font-weight:600;font-size:12px;opacity:.85}
 .btns.three{grid-template-columns:1fr 1fr 1.4fr}
-.b-four{background:#5B3A8E;color:#fff;box-shadow:0 3px 0 #3A2260}
+.btns.four{grid-template-columns:1fr 1fr 1fr 1.25fr;gap:6px}
+.btns.four button{font-size:16px}.btns.four small{font-size:11px}
+.btns.wait{grid-template-columns:1fr 1.5fr}
+.b-four{background:var(--black);color:#fff;border:1.5px solid var(--red);box-shadow:0 3px 0 #000}
+.b-kitti{background:var(--black);color:#fff;border:1.5px solid rgba(255,255,255,.28);box-shadow:0 3px 0 #000}
 .b-four:disabled{opacity:.4;box-shadow:none}
 .pick .rd{font-size:13px;font-weight:600;color:var(--soft);border:1px solid rgba(255,244,220,.25);border-radius:99px;padding:3px 10px;white-space:nowrap}
 .pick .rd:hover{background:rgba(255,244,220,.08)}
-.result .kind.four,.badge.f{background:#5B3A8E;color:#fff}
+.result .kind.four,.badge.f{background:var(--black);color:#fff}
 .tog{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;border:1.5px solid var(--line) !important;padding:10px 12px;color:var(--ink)}
 .tog b{display:block;font-weight:700}.tog small{display:block;color:var(--muted);font-size:14px;font-weight:400}
 .sw{flex:none;width:46px;height:28px;border-radius:99px;background:var(--line);position:relative;transition:background .15s}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform .15s}
 .tog[aria-checked="true"] .sw{background:var(--felt)}.tog[aria-checked="true"] .sw::after{transform:translateX(18px)}
 .b-salami{background:var(--red);color:#fff;box-shadow:0 3px 0 var(--red-d)}
-.b-win{background:var(--gold);color:var(--gold-ink);font-size:22px !important;box-shadow:0 3px 0 var(--gold-d)}
+.b-win{background:var(--prime);color:#fff;font-size:22px !important;box-shadow:0 3px 0 var(--prime-d)}
 .b-salami:disabled,.b-win:disabled{opacity:.4;box-shadow:none}
 .btns button:active:not(:disabled){transform:translateY(2px)}
 
@@ -210,16 +199,20 @@ details.sec[open] summary::after{content:"−"}
 label{display:block;font-weight:700;margin:0 0 6px}
 .hint{color:var(--muted);font-size:15px;margin-top:6px}
 .err{color:var(--loss);font-size:15px;margin-top:6px;min-height:1em}
-.stepper{display:flex;align-items:center;gap:12px}
-.stepper button{width:46px;height:46px;background:var(--panel);border:1.5px solid var(--line);font-size:22px;font-weight:700;color:var(--ink)}
-.stepper button:disabled{opacity:.35}
-.stepper .val{font-family:var(--display);font-size:30px;font-weight:800;min-width:32px;text-align:center}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.seg button{height:54px;border:1.5px solid var(--line);font-family:var(--display);font-size:26px;font-weight:800;color:var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--prime);border-color:var(--prime);color:#fff}
+.total-hint{margin-top:8px;font-size:15px;color:var(--ink)}.total-hint b{font-family:var(--display);font-size:18px}
 .names{display:grid;gap:8px}
 .quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .quick button{color:var(--ink);border:1.5px solid var(--line);padding:4px 12px;font-weight:600;font-size:15px;border-radius:99px}
-.quick button[aria-pressed="true"]{background:var(--felt);border-color:var(--felt);color:#fff}
-.go{background:var(--gold);color:var(--gold-ink);font-family:var(--display);font-weight:800;font-size:20px;padding:12px 18px;width:100%;box-shadow:0 3px 0 var(--gold-d)}
-.go:active{transform:translateY(2px);box-shadow:0 1px 0 var(--gold-d)}
+.quick button[aria-pressed="true"]{background:var(--prime);border-color:var(--prime);color:#fff}
+.go{background:var(--prime);color:#fff;font-family:var(--display);font-weight:800;font-size:20px;padding:12px 18px;width:100%;box-shadow:0 3px 0 var(--prime-d)}
+.go:active{transform:translateY(2px);box-shadow:0 1px 0 var(--prime-d)}
+/* settle up */
+.st-img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--line);margin:4px 0 14px}
+.st-btns{display:grid;gap:8px}
+.st-btns button{width:100%}
 
 /* sheets */
 /* sheets sit inside the visible viewport, so the on-screen keyboard never covers them */
@@ -233,7 +226,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   .tools{gap:6px}.tool{font-size:12px;padding:8px 2px 6px}
   .total .amt{font-size:52px}.result .won{font-size:44px}.result .who{font-size:28px}
   .hand{gap:6px}.pc .big{font-size:19px}.pc .nm{font-size:12px}
-  .btns button{font-size:16px}.b-win{font-size:20px !important}
+  .btns button{font-size:16px}.b-win{font-size:20px !important}.btns.four button{font-size:14px}
   .two{gap:8px}
 }
 @media (max-height:560px){.total .amt{font-size:44px}.total{margin:6px 0 2px}}
@@ -241,7 +234,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
 .sheet p{margin:0 0 14px;color:var(--muted)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .ghost{color:var(--ink);border:1.5px solid var(--line);padding:11px 14px;font-weight:600}
-.okb{background:var(--felt);color:#fff;font-weight:700;padding:11px 14px}
+.okb{background:var(--prime);color:#fff;font-weight:700;padding:11px 14px}
 .okb:disabled{opacity:.4}
 .danger{background:var(--loss);color:#fff;font-weight:700;padding:11px 14px}
 .danger:disabled{opacity:.4}
@@ -267,15 +260,15 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     <p class="lead" data-t="setupLead"></p>
     <div class="field">
       <label data-t="players"></label>
-      <div class="stepper"><button id="minus" aria-label="−">−</button><div class="val" id="count">4</div><button id="plus" aria-label="+">+</button></div>
+      <div class="seg" id="seg" role="group"></div>
       <div class="hint" data-t="playersHint"></div>
     </div>
     <div class="field"><label data-t="names"></label><div class="names" id="names"></div></div>
     <div class="field">
       <label for="potIn" data-t="potLabel"></label>
-      <input id="potIn" type="number" inputmode="decimal" min="1" value="80">
+      <input id="potIn" type="number" inputmode="decimal" min="1" value="20">
       <div class="quick" id="quick"></div>
-      <div class="hint" id="eachHint"></div>
+      <div class="total-hint" id="eachHint"></div>
     </div>
     <div class="field">
       <label data-t="houseRules"></label>
@@ -312,19 +305,12 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       <div class="amt"><small data-t="rs"></small><span id="potAmt">0</span></div>
       <div class="note" id="note"></div>
     </div>
-    <div class="seats" id="seats"></div>
-    <div class="result hidden" id="result"></div>
-  </div>
-
-  <div id="pickArea">
-    <div class="pick"><h2 id="pickTitle"></h2><button class="rd" id="redealBtn" data-t="redeal"></button></div>
-    <div class="hand" id="hand" role="radiogroup"></div>
-    <div class="kz">
-      <div class="kz-q" data-t="kittiQ"></div>
-      <div class="kz-who" id="kzWho"></div>
-      <div class="chips" id="breakers" role="group"></div>
-      <button class="b-kitti" id="kittiBtn"></button>
+    <div id="pickArea">
+      <div class="pick"><h2 id="pickTitle"></h2><button class="rd" id="redealBtn" data-t="redeal"></button></div>
+      <div class="hand" id="hand" role="radiogroup"></div>
+      <div class="taphint" data-t="tapHint"></div>
     </div>
+    <div class="result hidden" id="result"></div>
   </div>
 
   <h2 class="sec-title" data-t="afterGame"></h2>
@@ -335,9 +321,13 @@ body.kb .rail,body.kb .toast{visibility:hidden}
 
  <div class="rail"><div class="rail-in">
    <div class="msg" id="railMsg"></div>
-   <button class="b-next hidden" id="nextBtn" data-t="nextGame"></button>
+   <div class="btns wait hidden" id="waitBtns">
+     <button class="b-wrap" id="wrapBtn"></button>
+     <button class="b-next" id="nextBtn" data-t="nextGame"></button>
+   </div>
    <div class="btns" id="playBtns">
      <button class="b-four hidden" id="fourBtn" disabled></button>
+     <button class="b-kitti" id="kittiBtn"></button>
      <button class="b-salami" id="salamiBtn" disabled></button>
      <button class="b-win" id="winBtn" disabled></button>
    </div>
@@ -355,8 +345,32 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     <button id="ovLeave"></button>
   </div>
   <button class="b-next" id="ovNext" data-t="nextGame"></button>
+  <button class="b-wrap" id="ovWrap"></button>
   <button class="ov-undo" id="ovUndo" data-t="undoRes"></button>
 </div></div>
+
+<!-- SETTLE UP (after wrapping up) -->
+<section id="settle" class="hidden">
+ <div class="wrap">
+  <div class="top">
+    <div class="brand"><span data-t="brand"></span><span class="s"><i>♠</i><i class="r">♥</i><i class="r">♦</i><i>♣</i></span></div>
+    <button class="lang langBtn"></button>
+  </div>
+  <div class="panel">
+    <h1 data-t="settleTitle"></h1>
+    <p class="lead" data-t="settleLead"></p>
+    <img class="st-img" id="stImg" alt="">
+    <div class="st-btns">
+      <button class="go" id="stDown" data-t="download"></button>
+      <button class="okb hidden" id="stShare" data-t="shareImg"></button>
+      <div class="two" style="margin-top:0">
+        <button class="ghost" id="stBack" data-t="backGame"></button>
+        <button class="ghost" id="stNew" data-t="startOver"></button>
+      </div>
+    </div>
+  </div>
+ </div>
+</section>
 
 <!-- add player -->
 <div class="scrim hidden" id="sAdd" role="dialog" aria-modal="true" aria-labelledby="addT"><div class="sheet">
@@ -373,7 +387,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   <p data-t="potInfo"></p>
   <input id="potEdit" type="number" inputmode="decimal" min="1">
   <div class="quick" id="quick2"></div>
-  <div class="hint" id="potEach"></div>
+  <div class="total-hint" id="potEach"></div>
   <div class="err" id="potErr"></div>
   <div class="two"><button class="ghost" data-close="sPot" data-t="cancel"></button><button class="okb" id="potOk" data-t="save"></button></div>
 </div></div>
@@ -397,9 +411,9 @@ body.kb .rail,body.kb .toast{visibility:hidden}
 <script>
 (function(){
   const KEY = "kitti-scorekeeper-v3", OLDKEYS = ["kitti-scorekeeper-v2","kitti-scorekeeper-v1"], LKEY = "kitti-lang";
-  const MIN = 2, MAX = 5, QUICK = [40, 80, 100, 200];
+  const MIN = 2, MAX = 5, QUICK = [10, 20, 50, 100];
   const SUITS = [["♠",0,"#1E2A44"],["♥",1,"#C9372C"],["♦",1,"#D2691E"],["♣",0,"#2E5E3E"],["♠",0,"#5B3A8E"]];
-  let draftFour = false, lang = "en", count = 4, draftNames = ["","","","",""], state = null, selected = null, breaker = null, ovMin = false, leavePick = null, toastTimer = null;
+  let draftFour = false, lang = "en", count = 4, draftNames = ["","","","",""], state = null, selected = null, ovMin = false, leavePick = null, toastTimer = null;
   try{ lang = localStorage.getItem(LKEY) || "en"; }catch(e){}
 
   /* ---------- text ---------- */
@@ -407,23 +421,24 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     en:{
       brand:"Kitti", setupTitle:"New game", setupLead:"Set the table, then pick the winner after each game.",
       players:"Players", playersHint:"2 to 5 players. Each gets 9 cards.", names:"Names", player:n=>"Player "+n,
-      potLabel:"Pot per game (Rs)", each:s=>"Each player puts in Rs "+s+" per game.", start:"Deal the cards",
-      errPot:"Enter a pot amount above 0.", errNames:"Give each player a different name.",
-      toolAdd:"Add player", toolPot:"Change pot", toolLeave:"Player leaves", toolReset:"Reset game",
+      potLabel:"Each player puts in (Rs)", each:(p,n,s)=>"Pot per game: <b>Rs "+p+"</b> ("+n+" × Rs "+s+")", start:"Deal the cards",
+      errPot:"Enter an amount above 0.", errNames:"Give each player a different name.",
+      toolAdd:"Add player", toolPot:"Change amount", toolLeave:"Player leaves", toolReset:"Reset game",
       round:n=>"Game <b>"+n+"</b>", share:s=>"<b>Rs "+s+"</b> each", onTable:"Money on the table", rs:"Rs",
       noteKitti:(c,k)=>"<b>Rs "+c+"</b> carried from "+k+" Kitti "+(k==1?"game":"games"), noteNew:p=>"Pot Rs "+p+" this game",
       pickTitle:n=>"Who won game "+n+"?",
-      kitti:"Kitti", kittiSub:"Money stays on the table", salami:"Salami", salamiSub:"3 of 3 hands", win:"Win", winnerTag:"Winner",
-      railIdle:"Tap the winner's card", railSel:(n,w,s)=>"<b>"+n+"</b> takes Rs "+w+" on a win, Rs "+s+" on a Salami",
+      kitti:"Kitti", kittiSub:"Nobody won", salami:"Salami", salamiSub:"3 of 3 hands", win:"Win", winnerTag:"Selected",
+      railIdle:"Tap the winner's card, or Kitti if nobody won",
+      tapHint:"Tap the winner. For a Kitti, tap who broke the run first (optional).", railSel:(n,w,s)=>"<b>"+n+"</b> takes Rs "+w+" on a win, Rs "+s+" on a Salami",
       resGame:n=>"Game "+n+" result", resWon:"won", fromP:n=>"From "+n, nextGame:"Start next game", railWait:"Settle this game, then start the next one",
       afterGame:"After the game", scoresTitle:"Scores and settle up", scores:"Scores", whoPays:"Who pays whom",
       pays:(a,b)=>a+" pays "+b, square:"Everyone is square.", stillTable:"Still on the table", settled:"settled",
       historyTitle:"Game history", noRounds:"No games yet.",
       logKitti:"Kitti", logKittiD:x=>"Nobody won. Rs "+x+" on the table.",
       logWon:n=>n+" won", logD:(e,x)=>"Up to Rs "+e+" from each, Rs "+x+" total",
-      evJoin:n=>n+" joined", evLeave:(n,x)=>n+" left and paid Rs "+x, evLeaveR:(n,x)=>n+" left and received Rs "+x, evLeave0:n=>n+" left", evPot:(p,s)=>"Pot changed to Rs "+p+" (Rs "+s+" each)",
+      evJoin:n=>n+" joined", evLeave:(n,x)=>n+" left and paid Rs "+x, evLeaveR:(n,x)=>n+" left and received Rs "+x, evLeave0:n=>n+" left", evPot:(p,s)=>"Each now puts in Rs "+s+" (pot Rs "+p+")",
       tKitti:(r,x)=>"Game "+r+": Kitti. Rs "+x+" stays on the table.", tWin:(r,n,x)=>"Game "+r+": "+n+" won Rs "+x+".", tSalami:(r,n,x)=>"Game "+r+": "+n+" Salami, Rs "+x+".",
-      tJoin:(n,p)=>n+" joined. Pot is now Rs "+p+".", tLeave:n=>n+" settled up and left.", tPot:p=>"Pot is now Rs "+p+" per game.", tNext:n=>"Game "+n+" started.",
+      tJoin:(n,p)=>n+" joined. Pot is now Rs "+p+".", tLeave:n=>n+" settled up and left.", tPot:s=>"Each player now puts in Rs "+s+" per game.", tNext:n=>"Game "+n+" started.",
       undo:"Undo", rulesTitle:"How the money works",
       houseRules:"House rules", fourRule:"Four of a kind wins instantly", fourRuleSub:"Paid the same as a normal win.",
       four:"4 of a kind", fourSub:"Instant win", tFour:(r,n,x)=>"Game "+r+": "+n+" had four of a kind, Rs "+x+".",
@@ -433,7 +448,11 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       kittiQ:"Nobody won 2 hands?", kittiWho:"Who broke the run? Optional. They deal the next game.",
       deals:n=>"<b>"+n+"</b> deals this game", logBy:n=>"Broken by "+n+".",
       tKittiBy:(r,x,n)=>"Game "+r+": Kitti by "+n+". Rs "+x+" stays on the table.",
-      ovSub:"Anyone joining or leaving? Do it before the next game.", undoRes:"Undo this result", hide:"Hide",
+      ovSub:"Anyone joining or leaving? Do it before the next game.",
+      wrap:"Wrap up", wrapSub:"Settle and finish", settleTitle:"Settle up", settleLead:"Final tally. Download the image and share it so everyone can pay later.",
+      download:"Download image", shareImg:"Share image", backGame:"Back to game", startOver:"New table",
+      imgTitle:"Kitti settle-up", imgGames:n=>n+(n==1?" game":" games")+" played", imgFoot:"Kitti score tracker",
+      confirmNew:"Start a new table? This game's scores will be cleared.", undoRes:"Undo this result", hide:"Hide",
       rules:s=>"<p>Every player puts an equal share on the table each game. Right now that is Rs "+s+".</p><ul>"+
         "<li><b>Win</b> (2 of 3 hands): the winner takes all the money on the table.</li>"+
         "<li><b>Salami</b> (3 of 3 hands): the winner takes the table, and every loser pays one extra share.</li>"+
@@ -442,35 +461,36 @@ body.kb .rail,body.kb .toast{visibility:hidden}
         "<li><b>Leaving</b>: the player settles their score with the others before they go. If they have money on the table from a Kitti, they pay it to the players who stay, and those players keep it on the table for the next winner.</li></ul>",
       addTitle:"Add a player", addInfo:s=>"They join from this game and put in Rs "+s+" like everyone else.", addOk:"Add to table", addFull:"The table is full at 5 players.",
       errName:"Enter a name that isn't already at the table.", cancel:"Cancel", save:"Save",
-      potTitle:"Change the pot", potInfo:"The new pot starts this game. Past games keep their amount.",
+      potTitle:"Change each player's amount", potInfo:"The new amount starts this game. Past games keep theirs.",
       leaveTitle:"Who is leaving?", leaveInfo:"They settle up with everyone before leaving.", leaveOk:"Payment done",
       onT:x=>"Rs "+x+" on the table", leaveMin:"At least 2 players must stay.",
       lPays:(a,b)=>a+" pays "+b, lGets:(a,b)=>b+" pays "+a, lNothing:n=>n+" is square. Nothing to pay.",
       lTable:(x)=>"Includes Rs "+x+" from the table, which stays on the table with the players who receive it.",
       lTotalPay:(n,x)=>"<b>"+n+"</b> pays Rs "+x+" in total", lTotalGet:(n,x)=>"<b>"+n+"</b> receives Rs "+x+" in total",
       lConfirm:"Tap Payment done once the money has changed hands.",
-      confirmTitle:"Reset the game?", resetBody:"All games and scores will be cleared. You can set players and the pot again.", keepPlaying:"Keep playing", langBtn:"नेपाली"
+      confirmTitle:"Reset the game?", resetBody:"All games and scores will be cleared. You can set players and the amount again.", keepPlaying:"Keep playing", langBtn:"नेपाली"
     },
     ne:{
       brand:"किट्टी", setupTitle:"नयाँ खेल", setupLead:"टेबल मिलाउनुहोस्, अनि हरेक खेलपछि विजेता छान्नुहोस्।",
       players:"खेलाडी", playersHint:"२ देखि ५ जना खेलाडी। सबैले ९ पत्ती पाउँछन्।", names:"नामहरू", player:n=>"खेलाडी "+digits(n),
-      potLabel:"प्रति खेल पोट (रु)", each:s=>"हरेक खेलाडीले प्रति खेल रु "+s+" राख्छ।", start:"पत्ती बाँड्नुहोस्",
-      errPot:"० भन्दा बढी पोट रकम लेख्नुहोस्।", errNames:"हरेक खेलाडीको फरक नाम राख्नुहोस्।",
-      toolAdd:"खेलाडी थप्ने", toolPot:"पोट बदल्ने", toolLeave:"खेलाडी छोड्ने", toolReset:"खेल रिसेट",
+      potLabel:"हरेक खेलाडीले राख्ने (रु)", each:(p,n,s)=>"प्रति खेल पोट: <b>रु "+p+"</b> ("+n+" × रु "+s+")", start:"पत्ती बाँड्नुहोस्",
+      errPot:"० भन्दा बढी रकम लेख्नुहोस्।", errNames:"हरेक खेलाडीको फरक नाम राख्नुहोस्।",
+      toolAdd:"खेलाडी थप्ने", toolPot:"रकम बदल्ने", toolLeave:"खेलाडी छोड्ने", toolReset:"खेल रिसेट",
       round:n=>"खेल <b>"+n+"</b>", share:s=>"हरेकको <b>रु "+s+"</b>", onTable:"टेबलमा रहेको पैसा", rs:"रु",
       noteKitti:(c,k)=>k+" किट्टी खेलबाट <b>रु "+c+"</b> सरेको", noteNew:p=>"यो खेलको पोट रु "+p,
       pickTitle:n=>"खेल "+n+" कसले जित्यो?",
-      kitti:"किट्टी", kittiSub:"पैसा टेबलमै रहन्छ", salami:"सलामी", salamiSub:"३ मध्ये ३ हात", win:"जित", winnerTag:"विजेता",
-      railIdle:"विजेताको पत्ती थिच्नुहोस्", railSel:(n,w,s)=>"<b>"+n+"</b> ले जितमा रु "+w+", सलामीमा रु "+s+" पाउँछ",
+      kitti:"किट्टी", kittiSub:"कसैले जितेन", salami:"सलामी", salamiSub:"३ मध्ये ३ हात", win:"जित", winnerTag:"छानियो",
+      railIdle:"विजेताको पत्ती थिच्नुहोस्, कसैले नजिते किट्टी",
+      tapHint:"विजेता थिच्नुहोस्। किट्टी भए, पहिले क्रम तोड्ने थिच्नुहोस् (ऐच्छिक)।", railSel:(n,w,s)=>"<b>"+n+"</b> ले जितमा रु "+w+", सलामीमा रु "+s+" पाउँछ",
       resGame:n=>"खेल "+n+" को नतिजा", resWon:"ले जित्यो", fromP:n=>n+" बाट", nextGame:"अर्को खेल सुरु गर्नुहोस्", railWait:"यो खेलको हिसाब मिलाएर अर्को खेल सुरु गर्नुहोस्",
       afterGame:"खेलपछि", scoresTitle:"स्कोर र हिसाब मिलान", scores:"स्कोर", whoPays:"कसले कसलाई तिर्ने",
       pays:(a,b)=>a+" ले "+b+" लाई तिर्ने", square:"सबैको हिसाब बराबर छ।", stillTable:"अझै टेबलमा", settled:"हिसाब मिल्यो",
       historyTitle:"खेल इतिहास", noRounds:"अहिलेसम्म कुनै खेल छैन।",
       logKitti:"किट्टी", logKittiD:x=>"कसैले जितेन। टेबलमा रु "+x+"।",
       logWon:n=>n+" ले जित्यो", logD:(e,x)=>"हरेकबाट बढीमा रु "+e+", जम्मा रु "+x,
-      evJoin:n=>n+" खेलमा थपियो", evLeave:(n,x)=>n+" ले रु "+x+" तिरेर छोड्यो", evLeaveR:(n,x)=>n+" ले रु "+x+" पाएर छोड्यो", evLeave0:n=>n+" ले छोड्यो", evPot:(p,s)=>"पोट रु "+p+" बनाइयो (हरेकको रु "+s+")",
+      evJoin:n=>n+" खेलमा थपियो", evLeave:(n,x)=>n+" ले रु "+x+" तिरेर छोड्यो", evLeaveR:(n,x)=>n+" ले रु "+x+" पाएर छोड्यो", evLeave0:n=>n+" ले छोड्यो", evPot:(p,s)=>"अब हरेकले रु "+s+" राख्छ (पोट रु "+p+")",
       tKitti:(r,x)=>"खेल "+r+": किट्टी। रु "+x+" टेबलमै रहन्छ।", tWin:(r,n,x)=>"खेल "+r+": "+n+" ले रु "+x+" जित्यो।", tSalami:(r,n,x)=>"खेल "+r+": "+n+" को सलामी, रु "+x+"।",
-      tJoin:(n,p)=>n+" थपियो। अब पोट रु "+p+"।", tLeave:n=>n+" ले हिसाब मिलाएर छोड्यो।", tPot:p=>"अब पोट प्रति खेल रु "+p+"।", tNext:n=>"खेल "+n+" सुरु भयो।",
+      tJoin:(n,p)=>n+" थपियो। अब पोट रु "+p+"।", tLeave:n=>n+" ले हिसाब मिलाएर छोड्यो।", tPot:s=>"अब हरेक खेलाडीले प्रति खेल रु "+s+" राख्छ।", tNext:n=>"खेल "+n+" सुरु भयो।",
       undo:"फिर्ता", rulesTitle:"पैसाको हिसाब कसरी हुन्छ",
       houseRules:"घरको नियम", fourRule:"चार एउटै पत्ती भए तुरुन्तै जित", fourRuleSub:"सामान्य जितजस्तै भुक्तानी।",
       four:"चार एउटै", fourSub:"तुरुन्त जित", tFour:(r,n,x)=>"खेल "+r+": "+n+" सँग चार एउटै पत्ती, रु "+x+"।",
@@ -480,7 +500,11 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       kittiQ:"कसैले २ हात जितेन?", kittiWho:"क्रम कसले तोड्यो? ऐच्छिक। उसले अर्को खेलमा पत्ती बाँड्छ।",
       deals:n=>"<b>"+n+"</b> ले यो खेलमा पत्ती बाँड्छ", logBy:n=>n+" ले तोड्यो।",
       tKittiBy:(r,x,n)=>"खेल "+r+": "+n+" ले किट्टी पार्‍यो। रु "+x+" टेबलमै रहन्छ।",
-      ovSub:"कोही थपिँदै वा छोड्दै हुनुहुन्छ? अर्को खेलअघि नै गर्नुहोस्।", undoRes:"यो नतिजा फिर्ता", hide:"लुकाउने",
+      ovSub:"कोही थपिँदै वा छोड्दै हुनुहुन्छ? अर्को खेलअघि नै गर्नुहोस्।",
+      wrap:"खेल सक्ने", wrapSub:"हिसाब मिलाएर अन्त्य", settleTitle:"हिसाब मिलान", settleLead:"अन्तिम हिसाब। तस्बिर डाउनलोड गरेर सेयर गर्नुहोस्, सबैले पछि तिर्न सक्छन्।",
+      download:"तस्बिर डाउनलोड", shareImg:"तस्बिर सेयर", backGame:"खेलमा फर्कने", startOver:"नयाँ टेबल",
+      imgTitle:"किट्टी हिसाब", imgGames:n=>n+" खेल खेलियो", imgFoot:"किट्टी स्कोर ट्र्याकर",
+      confirmNew:"नयाँ टेबल सुरु गर्ने? यो खेलको स्कोर मेटिनेछ।", undoRes:"यो नतिजा फिर्ता", hide:"लुकाउने",
       rules:s=>"<p>हरेक खेलमा सबै खेलाडीले बराबर भाग टेबलमा राख्छन्। अहिले त्यो रु "+s+" हो।</p><ul>"+
         "<li><b>जित</b> (३ मध्ये २ हात): टेबलको सबै पैसा विजेताले लिन्छ।</li>"+
         "<li><b>सलामी</b> (३ मध्ये ३ हात): विजेताले टेबलको पैसा लिन्छ, र हरेक हार्नेले एक भाग थप तिर्छ।</li>"+
@@ -489,14 +513,14 @@ body.kb .rail,body.kb .toast{visibility:hidden}
         "<li><b>छोड्दा</b>: खेलाडीले जानुअघि सबैसँग हिसाब मिलाउँछ। किट्टीबाट टेबलमा पैसा छ भने, बस्ने खेलाडीहरूलाई तिर्छ, र उनीहरूले त्यो अर्को विजेताका लागि टेबलमै राख्छन्।</li></ul>",
       addTitle:"खेलाडी थप्नुहोस्", addInfo:s=>"यही खेलदेखि खेल्छ र अरूजस्तै रु "+s+" राख्छ।", addOk:"टेबलमा थप्नुहोस्", addFull:"टेबलमा ५ जना पुगिसके।",
       errName:"टेबलमा नभएको नाम लेख्नुहोस्।", cancel:"रद्द", save:"सेभ",
-      potTitle:"पोट बदल्नुहोस्", potInfo:"नयाँ पोट यही खेलदेखि लागू हुन्छ। पुराना खेलको रकम उस्तै रहन्छ।",
+      potTitle:"हरेकको रकम बदल्नुहोस्", potInfo:"नयाँ रकम यही खेलदेखि लागू हुन्छ। पुराना खेलको रकम उस्तै रहन्छ।",
       leaveTitle:"को छोड्दै हुनुहुन्छ?", leaveInfo:"जानुअघि सबैसँग हिसाब मिलाउनुहोस्।", leaveOk:"भुक्तानी भयो",
       onT:x=>"टेबलमा रु "+x, leaveMin:"कम्तीमा २ जना खेलमा रहनुपर्छ।",
       lPays:(a,b)=>a+" ले "+b+" लाई तिर्ने", lGets:(a,b)=>b+" ले "+a+" लाई तिर्ने", lNothing:n=>n+" को हिसाब बराबर छ। केही तिर्नु पर्दैन।",
       lTable:(x)=>"यसमा टेबलको रु "+x+" पनि छ, जुन पाउनेहरूले टेबलमै राख्छन्।",
       lTotalPay:(n,x)=>"<b>"+n+"</b> ले जम्मा रु "+x+" तिर्ने", lTotalGet:(n,x)=>"<b>"+n+"</b> ले जम्मा रु "+x+" पाउने",
       lConfirm:"पैसा दिइसकेपछि भुक्तानी भयो थिच्नुहोस्।",
-      confirmTitle:"खेल रिसेट गर्ने?", resetBody:"सबै खेल र स्कोर मेटिनेछन्। खेलाडी र पोट फेरि राख्न सकिन्छ।", keepPlaying:"खेल जारी राख्नुहोस्", langBtn:"English"
+      confirmTitle:"खेल रिसेट गर्ने?", resetBody:"सबै खेल र स्कोर मेटिनेछन्। खेलाडी र रकम फेरि राख्न सकिन्छ।", keepPlaying:"खेल जारी राख्नुहोस्", langBtn:"English"
     }
   };
   const t = k => T[lang][k];
@@ -646,7 +670,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   document.querySelectorAll(".langBtn").forEach(b => b.onclick = () => {
     lang = lang === "en" ? "ne" : "en";
     try{ localStorage.setItem(LKEY, lang); }catch(e){}
-    applyText(); state ? renderGame(false) : renderSetup();
+    applyText(); state ? (state.wrapped ? renderSettle() : renderGame(false)) : renderSetup();
     if(state && !$("sLeave").classList.contains("hidden")) renderLeave();
   });
 
@@ -665,29 +689,34 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       inp.oninput = e => { draftNames[i] = e.target.value; };
       box.appendChild(inp);
     }
-    $("count").textContent = digits(count);
+    const seg = $("seg"); seg.innerHTML = "";
+    seg.setAttribute("aria-label", t("players"));
+    for(let n = MIN; n <= MAX; n++){
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = digits(n); b.setAttribute("aria-pressed", n === count);
+      b.onclick = () => { count = n; renderSetup(); };
+      seg.appendChild(b);
+    }
     $("fourTog").setAttribute("aria-checked", draftFour);
-    $("minus").disabled = count <= MIN; $("plus").disabled = count >= MAX;
     updatePot();
   }
+  // the amount is per player; the pot is that times the number of players
   function updatePot(){
-    const pot = parseFloat($("potIn").value);
+    const share = parseFloat($("potIn").value);
     $("setupErr").textContent = "";
-    $("eachHint").textContent = pot > 0 ? t("each")(fmt(pot/count)) : "";
+    $("eachHint").innerHTML = share > 0 ? t("each")(fmt(share*count), digits(count), fmt(share)) : "";
     quickPicks($("quick"), $("potIn"), updatePot);
   }
-  $("minus").onclick = () => { if(count > MIN){ count--; renderSetup(); } };
-  $("plus").onclick = () => { if(count < MAX){ count++; renderSetup(); } };
   $("potIn").oninput = updatePot;
   $("fourTog").onclick = () => { draftFour = !draftFour; $("fourTog").setAttribute("aria-checked", draftFour); };
   $("start").onclick = () => {
-    const pot = parseFloat($("potIn").value);
-    if(!(pot > 0)){ $("setupErr").textContent = t("errPot"); return; }
+    const share = parseFloat($("potIn").value);
+    if(!(share > 0)){ $("setupErr").textContent = t("errPot"); return; }
     const names = [];
     for(let i = 0; i < count; i++) names.push((draftNames[i] || "").trim() || T.en.player(i+1));
     const low = names.map(n => n.toLowerCase());
     if(new Set(low).size !== low.length){ $("setupErr").textContent = t("errNames"); return; }
-    state = {players:names, seated:names.map(()=>true), share:pot/names.length, rounds:[], events:[], waiting:false, actions:[], rules:{four:draftFour}};
+    state = {players:names, seated:names.map(()=>true), share, rounds:[], events:[], waiting:false, actions:[], rules:{four:draftFour}};
     selected = null; save(); show();
   };
 
@@ -702,7 +731,6 @@ body.kb .rail,body.kb .toast{visibility:hidden}
 
     // the table: money (playing) or the result of the last game (waiting)
     $("total").classList.toggle("hidden", waiting);
-    $("seats").classList.toggle("hidden", waiting);
     $("result").classList.toggle("hidden", !waiting);
     let resHTML = "";
     if(waiting){
@@ -721,19 +749,10 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       const last = g.log[g.log.length - 1];
       if(last && last.type === "kitti" && last.breaker != null && state.seated[last.breaker])
         $("note").innerHTML += '<br><span class="deal">'+t("deals")(esc(names[last.breaker]))+'</span>';
-      let seats = "";
-      g.seated.forEach(i => {
-        const n = names[i], c = SUITS[i % SUITS.length][2];
-        seats += '<div class="seat" style="--c:'+c+'"><span class="ch">'+esc(n.charAt(0).toUpperCase())+'</span>'+
-                 '<span class="tx"><span class="nm">'+esc(n)+'</span><span class="am">'+t("rs")+' '+fmt(g.onTable[i])+'</span></span></div>';
-      });
-      $("seats").innerHTML = seats;
-      const three = g.seated.length === 3 || g.seated.length === 5;
-      $("seats").style.setProperty("--sc", three ? 3 : 2); $("seats").classList.toggle("c3", three);
     }
     if(bump){ const m = waiting ? $("result") : $("total"); m.classList.remove("bump"); void m.offsetWidth; m.classList.add("bump"); }
 
-    // winner cards
+    // one card per player on the table: their money on the table, tap to pick the winner (or who broke a Kitti)
     $("pickArea").classList.toggle("hidden", waiting);
     if(selected !== null && !state.seated[selected]) selected = null;
     $("pickTitle").textContent = t("pickTitle")(rnd);
@@ -744,24 +763,11 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       const c = document.createElement("button");
       c.className = "pc" + (red ? " red" : ""); c.setAttribute("role","radio"); c.setAttribute("aria-checked", selected === i); c.setAttribute("aria-label", n);
       c.innerHTML = '<span class="cx tl"><span class="l">'+L+'</span><span class="s">'+sym+'</span></span>'+
-        '<span class="mid"><span class="big">'+sym+'</span><span class="nm">'+esc(n)+'</span></span>'+
+        '<span class="mid"><span class="big">'+sym+'</span><span class="nm">'+esc(n)+'</span><span class="amt">'+t("rs")+' '+fmt(g.onTable[i])+'</span></span>'+
         '<span class="ribbon">'+t("winnerTag")+'</span>';
       c.onclick = () => { selected = selected === i ? null : i; renderGame(false); };
       hand.appendChild(c);
     });
-
-    // kitti zone: optional "who broke the run"
-    if(breaker !== null && !state.seated[breaker]) breaker = null;
-    $("kzWho").textContent = t("kittiWho");
-    const bx = $("breakers"); bx.innerHTML = "";
-    bx.setAttribute("aria-label", t("kittiWho"));
-    g.seated.forEach(i => {
-      const b = document.createElement("button");
-      b.type = "button"; b.textContent = names[i]; b.setAttribute("aria-pressed", breaker === i);
-      b.onclick = () => { breaker = breaker === i ? null : i; renderGame(false); };
-      bx.appendChild(b);
-    });
-    $("kittiBtn").innerHTML = t("kitti") + "<small>" + t("kittiSub") + "</small>";
 
     $("tAdd").disabled = g.seated.length >= MAX;
     $("tLeave").disabled = g.seated.length <= MIN;
@@ -774,12 +780,16 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       $("ovLeave").textContent = "⇥ " + t("toolLeave"); $("ovLeave").disabled = g.seated.length <= MIN;
       $("ovX").setAttribute("aria-label", t("hide"));
     }
+    const wrapHTML = t("wrap") + "<small>" + t("wrapSub") + "</small>";
+    $("ovWrap").innerHTML = wrapHTML; $("wrapBtn").innerHTML = wrapHTML;
 
     // rail
-    $("nextBtn").classList.toggle("hidden", !waiting);
+    $("waitBtns").classList.toggle("hidden", !waiting);
     $("playBtns").classList.toggle("hidden", waiting);
     $("fourBtn").classList.toggle("hidden", !fourOn());
-    $("playBtns").classList.toggle("three", fourOn());
+    $("playBtns").classList.toggle("three", !fourOn());
+    $("playBtns").classList.toggle("four", fourOn());
+    $("kittiBtn").innerHTML = t("kitti") + "<small>" + t("kittiSub") + "</small>";
     $("fourBtn").innerHTML = t("four") + "<small>" + t("fourSub") + "</small>";
     $("salamiBtn").innerHTML = t("salami") + "<small>" + t("salamiSub") + "</small>";
     $("winBtn").textContent = t("win");
@@ -823,13 +833,15 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   function record(type){
     const g = compute(state), names = state.players, r = digits(state.rounds.length + 1);
     let msg;
+    // a Kitti with a card selected records that player as the one who broke the run
+    const breaker = type === "kitti" ? selected : null;
     if(type === "kitti") msg = breaker !== null ? t("tKittiBy")(r, fmt(g.table), names[breaker]) : t("tKitti")(r, fmt(g.table));
     else { const pv = g.preview(selected); msg = type === "salami" ? t("tSalami")(r, names[selected], fmt(pv.sal)) : type === "four" ? t("tFour")(r, names[selected], fmt(pv.win)) : t("tWin")(r, names[selected], fmt(pv.win)); }
     const round = {type, winner: type === "kitti" ? null : selected, share: state.share, seated: seatedIdx()};
     if(type === "kitti" && breaker !== null) round.breaker = breaker;
     state.rounds.push(round);
     state.waiting = type !== "kitti"; act("round");
-    selected = null; breaker = null; ovMin = false; save(); renderGame(true);
+    selected = null; ovMin = false; save(); renderGame(true);
     if(type === "kitti") toast(msg); else $("toast").classList.add("hidden");   // the overlay shows the result
     window.scrollTo({top:0, behavior:"smooth"});
   }
@@ -839,7 +851,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   // four pairs: the deal is skipped and redone. No money moves and the game number stays the same.
   $("redealBtn").onclick = () => {
     state.events.push({type:"redeal", before:state.rounds.length}); act("event");
-    selected = null; breaker = null; save(); renderGame(false);
+    selected = null; save(); renderGame(false);
     toast(t("tRedeal")(digits(state.rounds.length + 1)));
   };
   $("kittiBtn").onclick = () => record("kitti");
@@ -851,6 +863,10 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   $("nextBtn").onclick = startNext;
   $("ovNext").onclick = startNext;
   $("ovX").onclick = () => { ovMin = true; renderGame(false); };
+  // wrap up: only offered after a win, so the table is empty and the scores are final
+  function wrapUp(){ state.wrapped = true; save(); $("toast").classList.add("hidden"); show(); }
+  $("wrapBtn").onclick = wrapUp;
+  $("ovWrap").onclick = wrapUp;
   $("ovUndo").onclick = () => undo();
   $("ovAdd").onclick = () => $("tAdd").click();
   $("ovLeave").onclick = () => $("tLeave").click();
@@ -906,20 +922,19 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   // pot
   function potHint(){
     const v = parseFloat($("potEdit").value), n = seatedIdx().length;
-    $("potEach").textContent = v > 0 ? t("each")(fmt(v/n)) : "";
+    $("potEach").innerHTML = v > 0 ? t("each")(fmt(v*n), digits(n), fmt(v)) : "";
     quickPicks($("quick2"), $("potEdit"), potHint);
   }
-  $("tPot").onclick = () => { $("potEdit").value = r2(potNow()); $("potErr").textContent = ""; potHint(); open("sPot"); $("potEdit").focus(); };
+  $("tPot").onclick = () => { $("potEdit").value = r2(state.share); $("potErr").textContent = ""; potHint(); open("sPot"); $("potEdit").focus(); };
   $("potEdit").oninput = potHint;
   $("potOk").onclick = () => {
-    const v = parseFloat($("potEdit").value);
-    if(!(v > 0)){ $("potErr").textContent = t("errPot"); return; }
-    const ns = v / seatedIdx().length;
+    const ns = parseFloat($("potEdit").value);
+    if(!(ns > 0)){ $("potErr").textContent = t("errPot"); return; }
     if(Math.abs(ns - state.share) > 1e-9){
-      state.events.push({type:"pot", pot:v, share:ns, prevShare:state.share, before:state.rounds.length});
+      state.events.push({type:"pot", pot:ns * seatedIdx().length, share:ns, prevShare:state.share, before:state.rounds.length});
       state.share = ns; act("event"); save(); renderGame(true);
     }
-    close("sPot"); toast(t("tPot")(fmt(v)));
+    close("sPot"); toast(t("tPot")(fmt(ns)));
   };
   $("potEdit").onkeydown = e => { if(e.key === "Enter") $("potOk").click(); };
 
@@ -959,7 +974,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     close("sReset");
     const seated = seatedIdx().map(i => state.players[i]);
     draftNames = seated.concat(["","","","",""]).slice(0, MAX);
-    count = Math.max(MIN, Math.min(seated.length, MAX)); $("potIn").value = r2(potNow());
+    count = Math.max(MIN, Math.min(seated.length, MAX)); $("potIn").value = r2(state.share);
     draftFour = !!(state.rules && state.rules.four);
     state = null; selected = null; $("toast").classList.add("hidden");
     try{ localStorage.removeItem(KEY); OLDKEYS.forEach(k => localStorage.removeItem(k)); }catch(e){}
@@ -967,13 +982,101 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   }
 
   function show(){
-    const playing = !!state;
-    $("setup").classList.toggle("hidden", playing);
+    const playing = !!state && !state.wrapped, wrapped = !!state && !!state.wrapped;
+    $("setup").classList.toggle("hidden", !!state);
     $("game").classList.toggle("hidden", !playing);
+    $("settle").classList.toggle("hidden", !wrapped);
+    if(!playing) $("ov").classList.add("hidden");   // the result overlay sits outside #game
     applyText();
-    if(playing) renderGame(false); else renderSetup();
+    if(wrapped) renderSettle(); else if(playing) renderGame(false); else renderSetup();
     window.scrollTo(0,0);
   }
+
+  /* ---------- settle up: a shareable image of the final tally ---------- */
+  let stBlob = null;
+  function stFile(){ const d = new Date(), z = n => String(n).padStart(2,"0"); return "kitti-settle-up-"+d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+".png"; }
+  function drawSettle(){
+    const g = compute(state), names = state.players;
+    const order = names.map((n,i)=>({n, i, b:g.bal[i]})).sort((a,b)=>b.b-a.b);
+    const sts = settlements(g.bal, names);
+    const W = 1080, PAD = 72, ROW = 86, HEAD = 300;
+    const payRows = Math.max(sts.length, 1);
+    const H = HEAD + 70 + order.length*ROW + 60 + 70 + payRows*ROW + 150;
+    const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+    const x = cv.getContext("2d");
+    const disp = '"Baloo 2","Mukta","Segoe UI",sans-serif', body = '"Mukta","Noto Sans Devanagari","Segoe UI",sans-serif';
+    // paper
+    x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, W, H);
+    // green felt header with a black rim and a red line
+    const gr = x.createRadialGradient(W/2, 60, 40, W/2, 120, W*.7);
+    gr.addColorStop(0, "#2A8460"); gr.addColorStop(1, "#134A34");
+    x.fillStyle = gr; x.fillRect(0, 0, W, HEAD);
+    x.fillStyle = "#D7372B"; x.fillRect(0, HEAD, W, 10);
+    x.fillStyle = "#141414"; x.fillRect(0, H - 24, W, 24);
+    x.textBaseline = "alphabetic";
+    x.fillStyle = "#FFFFFF"; x.font = "800 84px " + disp; x.textAlign = "left";
+    x.fillText(t("imgTitle"), PAD, 140);
+    // suits: black and red
+    const suits = [["♠","#141414"],["♥","#D7372B"],["♦","#D7372B"],["♣","#141414"]];
+    x.font = "700 56px " + body; x.textAlign = "right";
+    let sx = W - PAD;
+    for(let k = suits.length - 1; k >= 0; k--){ x.fillStyle = suits[k][1]; x.fillText(suits[k][0], sx, 132); sx -= 62; }
+    x.textAlign = "left"; x.fillStyle = "rgba(255,244,220,.85)"; x.font = "500 38px " + body;
+    const d = new Date().toLocaleDateString(lang === "ne" ? "ne-NP" : "en-GB", {day:"numeric", month:"long", year:"numeric"});
+    x.fillText(d + "  ·  " + t("imgGames")(digits(state.rounds.length)), PAD, 210);
+    x.fillText(t("rs") + " " + fmt(state.share) + " × " + digits(g.seated.length), PAD, 262);
+
+    let y = HEAD + 10 + 70;
+    const heading = txt => { x.fillStyle = "#134A34"; x.font = "800 44px " + disp; x.textAlign = "left"; x.fillText(txt, PAD, y); y += 24; };
+    const line = () => { x.fillStyle = "#DCE3DF"; x.fillRect(PAD, y, W - PAD*2, 2); };
+    const row = (left, right, color, sub) => {
+      line(); y += ROW - 26;
+      x.textAlign = "left"; x.fillStyle = "#17211D"; x.font = "600 40px " + body; x.fillText(left, PAD, y);
+      if(sub){ const w = x.measureText(left).width; x.fillStyle = "#5B6B64"; x.font = "500 30px " + body; x.fillText(" " + sub, PAD + w, y); }
+      x.textAlign = "right"; x.fillStyle = color; x.font = "800 44px " + disp; x.fillText(right, W - PAD, y);
+      y += 26;
+    };
+    heading(t("scores"));
+    order.forEach(o => row(o.n, signed(o.b), o.b > 0.004 ? "#1F7A47" : o.b < -0.004 ? "#B3261E" : "#5B6B64", state.seated[o.i] ? "" : "(" + t("settled") + ")"));
+    line(); y += 60 + 70 - 24;
+    heading(t("whoPays"));
+    if(sts.length) sts.forEach(s2 => row(t("pays")(s2.from, s2.to), t("rs") + " " + fmt(s2.amt), "#141414"));
+    else row(t("square"), "", "#141414");
+    line();
+    x.textAlign = "center"; x.fillStyle = "#9AAAA3"; x.font = "500 30px " + body;
+    x.fillText(t("imgFoot"), W/2, H - 60);
+    return cv;
+  }
+  function renderSettle(){
+    stBlob = null;
+    const paint = () => {
+      const cv = drawSettle();
+      $("stImg").src = cv.toDataURL("image/png");
+      $("stImg").alt = t("settleTitle");
+      cv.toBlob(b => {
+        stBlob = b;
+        let canShare = false;
+        try{ canShare = !!(b && navigator.canShare && navigator.canShare({files:[new File([b], stFile(), {type:"image/png"})]})); }catch(e){}
+        $("stShare").classList.toggle("hidden", !canShare);
+      }, "image/png");
+    };
+    // wait for the web fonts so the image uses them
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(paint, paint); else paint();
+  }
+  $("stDown").onclick = () => {
+    const a = document.createElement("a");
+    a.download = stFile();
+    a.href = stBlob ? URL.createObjectURL(stBlob) : $("stImg").src;
+    document.body.appendChild(a); a.click(); a.remove();
+    if(stBlob) setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  };
+  $("stShare").onclick = () => {
+    if(!stBlob) return;
+    const f = new File([stBlob], stFile(), {type:"image/png"});
+    navigator.share({files:[f], title:t("imgTitle")}).catch(() => {});
+  };
+  $("stBack").onclick = () => { state.wrapped = false; save(); show(); };
+  $("stNew").onclick = () => { if(confirm(t("confirmNew"))) doReset(); };
   /* keep sheets above the on-screen keyboard (works in Chrome, Safari and in-app browsers like Messenger) */
   function fitViewport(){
     const vv = window.visualViewport, root = document.documentElement;
