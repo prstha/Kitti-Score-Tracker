@@ -86,6 +86,7 @@ input{font:inherit;color:var(--ink);background:var(--panel);border:1.5px solid v
 .result .won small{font-size:24px;margin-right:6px;opacity:.85}
 .result .kind{display:inline-block;background:var(--red);color:#fff;border-radius:99px;padding:0 10px;font-size:14px;font-weight:700;margin-top:4px}
 .paylist{margin-top:12px;display:grid;gap:6px;text-align:left}
+.brief{margin-top:10px;font-size:15px;color:var(--soft)}
 .payrow{display:flex;justify-content:space-between;background:rgba(0,0,0,.22);border-radius:12px;padding:6px 12px;font-size:15px}
 .payrow b{font-family:var(--display);color:#fff}
 .b-next{width:100%;background:var(--prime);color:#fff;font-family:var(--display);font-weight:800;font-size:21px;padding:13px;box-shadow:0 3px 0 var(--prime-d)}
@@ -187,9 +188,12 @@ details.sec[open] summary::after{content:"−"}
 .b-salami:disabled,.b-win:disabled{opacity:.4;box-shadow:none}
 .btns button:active:not(:disabled){transform:translateY(2px)}
 
-.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(120px + env(safe-area-inset-bottom,0px));background:#0A0A0A;color:#fff;padding:10px 14px;border-radius:12px;
-  display:flex;gap:14px;align-items:center;justify-content:space-between;width:calc(100% - 28px);max-width:532px;z-index:20;font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
-.toast button{color:var(--gold);font-weight:700;padding:4px 6px;white-space:nowrap}
+.fb{display:block;margin:22px auto 0;padding:8px 14px;color:var(--soft);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.fb:hover{color:var(--cream)}
+/* last action + undo: sits in the rail in place of the hint, so it never covers the table or buttons */
+.toast{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px;min-height:1.4em;padding:2px 4px 2px 10px;border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-size:14px;line-height:1.3}
+.toast button{color:var(--gold);font-weight:700;padding:4px 8px;white-space:nowrap}
+.toast:not(.hidden) + .msg{display:none}
 
 /* setup */
 .panel{background:var(--panel);color:var(--ink);border-radius:18px;padding:18px}
@@ -277,6 +281,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     </div>
     <button class="go" id="start" data-t="start"></button>
   </div>
+  <button class="fb hidden" data-t="feedback"></button>
  </div>
 </section>
 
@@ -317,9 +322,11 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   <details class="sec" id="scoresSec"><summary data-t="scoresTitle"></summary><div class="sec-body" id="scores"></div></details>
   <details class="sec"><summary data-t="historyTitle"></summary><div class="sec-body log" id="log"></div></details>
   <details class="sec rules"><summary data-t="rulesTitle"></summary><div class="sec-body" id="rules"></div></details>
+  <button class="fb hidden" data-t="feedback"></button>
  </div>
 
  <div class="rail"><div class="rail-in">
+   <div class="toast hidden" id="toast" role="status"><span id="toastMsg"></span><button id="toastUndo" data-t="undo"></button></div>
    <div class="msg" id="railMsg"></div>
    <div class="btns wait hidden" id="waitBtns">
      <button class="b-wrap" id="wrapBtn"></button>
@@ -332,7 +339,6 @@ body.kb .rail,body.kb .toast{visibility:hidden}
      <button class="b-win" id="winBtn" disabled></button>
    </div>
  </div></div>
- <div class="toast hidden" id="toast" role="status"><span id="toastMsg"></span><button id="toastUndo" data-t="undo"></button></div>
 </section>
 
 <!-- result + start next game -->
@@ -369,6 +375,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       </div>
     </div>
   </div>
+  <button class="fb hidden" data-t="feedback"></button>
  </div>
 </section>
 
@@ -411,6 +418,9 @@ body.kb .rail,body.kb .toast{visibility:hidden}
 <script>
 (function(){
   const KEY = "kitti-scorekeeper-v3", OLDKEYS = ["kitti-scorekeeper-v2","kitti-scorekeeper-v1"], LKEY = "kitti-lang";
+  // fill these in to switch on visitor stats and the "Report a problem" button
+  const GOATCOUNTER = "";   // GoatCounter site code, e.g. "kitti" for kitti.goatcounter.com
+  const FEEDBACK_URL = "";  // Tally form link, e.g. "https://tally.so/r/abc123"
   const MIN = 2, MAX = 5, QUICK = [10, 20, 50, 100];
   const SUITS = [["♠",0,"#1E2A44"],["♥",1,"#C9372C"],["♦",1,"#D2691E"],["♣",0,"#2E5E3E"],["♠",0,"#5B3A8E"]];
   let draftFour = false, lang = "en", count = 4, draftNames = ["","","","",""], state = null, selected = null, ovMin = false, leavePick = null, toastTimer = null;
@@ -430,7 +440,8 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       kitti:"Kitti", kittiSub:"Nobody won", salami:"Salami", salamiSub:"3 of 3 hands", win:"Win", winnerTag:"Selected",
       railIdle:"Tap the winner's card, or Kitti if nobody won",
       tapHint:"Tap the winner. For a Kitti, tap who broke the run first (optional).", railSel:(n,w,s)=>"<b>"+n+"</b> takes Rs "+w+" on a win, Rs "+s+" on a Salami",
-      resGame:n=>"Game "+n+" result", resWon:"won", fromP:n=>"From "+n, nextGame:"Start next game", railWait:"Settle this game, then start the next one",
+      resGame:n=>"Game "+n+" result", resWon:"won", fromP:n=>"From "+n, fromEach:(x,n)=>"Rs "+x+" from each of "+n+" players", fromN:n=>"Paid by "+n+" players", nextGame:"Start next game",
+      payTo:l=>"Pays "+l, payItem:(n,x)=>n+" Rs "+x, getFrom:l=>"Gets from "+l, getFromN:n=>"Gets from "+n+" players", squareP:"Nothing to pay", railWait:"Settle this game, then start the next one",
       afterGame:"After the game", scoresTitle:"Scores and settle up", scores:"Scores", whoPays:"Who pays whom",
       pays:(a,b)=>a+" pays "+b, square:"Everyone is square.", stillTable:"Still on the table", settled:"settled",
       historyTitle:"Game history", noRounds:"No games yet.",
@@ -468,7 +479,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       lTable:(x)=>"Includes Rs "+x+" from the table, which stays on the table with the players who receive it.",
       lTotalPay:(n,x)=>"<b>"+n+"</b> pays Rs "+x+" in total", lTotalGet:(n,x)=>"<b>"+n+"</b> receives Rs "+x+" in total",
       lConfirm:"Tap Payment done once the money has changed hands.",
-      confirmTitle:"Reset the game?", resetBody:"All games and scores will be cleared. You can set players and the amount again.", keepPlaying:"Keep playing", langBtn:"नेपाली"
+      confirmTitle:"Reset the game?", resetBody:"All games and scores will be cleared. You can set players and the amount again.", keepPlaying:"Keep playing", langBtn:"नेपाली", feedback:"Report a problem or send feedback"
     },
     ne:{
       brand:"किट्टी", setupTitle:"नयाँ खेल", setupLead:"टेबल मिलाउनुहोस्, अनि हरेक खेलपछि विजेता छान्नुहोस्।",
@@ -482,7 +493,8 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       kitti:"किट्टी", kittiSub:"कसैले जितेन", salami:"सलामी", salamiSub:"३ मध्ये ३ हात", win:"जित", winnerTag:"छानियो",
       railIdle:"विजेताको पत्ती थिच्नुहोस्, कसैले नजिते किट्टी",
       tapHint:"विजेता थिच्नुहोस्। किट्टी भए, पहिले क्रम तोड्ने थिच्नुहोस् (ऐच्छिक)।", railSel:(n,w,s)=>"<b>"+n+"</b> ले जितमा रु "+w+", सलामीमा रु "+s+" पाउँछ",
-      resGame:n=>"खेल "+n+" को नतिजा", resWon:"ले जित्यो", fromP:n=>n+" बाट", nextGame:"अर्को खेल सुरु गर्नुहोस्", railWait:"यो खेलको हिसाब मिलाएर अर्को खेल सुरु गर्नुहोस्",
+      resGame:n=>"खेल "+n+" को नतिजा", resWon:"ले जित्यो", fromP:n=>n+" बाट", fromEach:(x,n)=>n+" जना हरेकबाट रु "+x, fromN:n=>n+" जनाले तिरे",
+      payTo:l=>l+" तिर्ने", payItem:(n,x)=>n+" लाई रु "+x, getFrom:l=>l+" बाट पाउने", getFromN:n=>n+" जनाबाट पाउने", squareP:"केही तिर्नु पर्दैन", nextGame:"अर्को खेल सुरु गर्नुहोस्", railWait:"यो खेलको हिसाब मिलाएर अर्को खेल सुरु गर्नुहोस्",
       afterGame:"खेलपछि", scoresTitle:"स्कोर र हिसाब मिलान", scores:"स्कोर", whoPays:"कसले कसलाई तिर्ने",
       pays:(a,b)=>a+" ले "+b+" लाई तिर्ने", square:"सबैको हिसाब बराबर छ।", stillTable:"अझै टेबलमा", settled:"हिसाब मिल्यो",
       historyTitle:"खेल इतिहास", noRounds:"अहिलेसम्म कुनै खेल छैन।",
@@ -520,7 +532,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       lTable:(x)=>"यसमा टेबलको रु "+x+" पनि छ, जुन पाउनेहरूले टेबलमै राख्छन्।",
       lTotalPay:(n,x)=>"<b>"+n+"</b> ले जम्मा रु "+x+" तिर्ने", lTotalGet:(n,x)=>"<b>"+n+"</b> ले जम्मा रु "+x+" पाउने",
       lConfirm:"पैसा दिइसकेपछि भुक्तानी भयो थिच्नुहोस्।",
-      confirmTitle:"खेल रिसेट गर्ने?", resetBody:"सबै खेल र स्कोर मेटिनेछन्। खेलाडी र रकम फेरि राख्न सकिन्छ।", keepPlaying:"खेल जारी राख्नुहोस्", langBtn:"English"
+      confirmTitle:"खेल रिसेट गर्ने?", resetBody:"सबै खेल र स्कोर मेटिनेछन्। खेलाडी र रकम फेरि राख्न सकिन्छ।", keepPlaying:"खेल जारी राख्नुहोस्", langBtn:"English", feedback:"समस्या वा सुझाव पठाउनुहोस्"
     }
   };
   const t = k => T[lang][k];
@@ -740,7 +752,9 @@ body.kb .rail,body.kb .toast{visibility:hidden}
         '<div class="who">'+esc(names[e.winner])+' '+(lang==="ne"?t("resWon"):t("resWon"))+'</div>'+
         '<div class="won"><small>'+t("rs")+'</small>'+fmt(e.total)+'</div>'+
         (e.type==="salami" ? '<span class="kind">'+t("salami")+'</span>' : e.type==="four" ? '<span class="kind four">'+t("four")+'</span>' : '')+
-        '<div class="paylist">'+e.pays.map(x => '<div class="payrow"><span>'+esc(t("fromP")(names[x.p]))+'</span><b>'+t("rs")+' '+fmt(x.pay)+'</b></div>').join("")+'</div>';
+        // brief: the full who-pays-whom is shown when they wrap up
+        '<div class="brief">'+(e.pays.every(x => Math.abs(x.pay - e.pays[0].pay) < 0.005)
+          ? t("fromEach")(fmt(e.pays[0] ? e.pays[0].pay : 0), digits(e.pays.length)) : t("fromN")(digits(e.pays.length)))+'</div>';
       $("result").innerHTML = resHTML;
     } else {
       $("potAmt").textContent = fmt(g.table);
@@ -999,9 +1013,8 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     const g = compute(state), names = state.players;
     const order = names.map((n,i)=>({n, i, b:g.bal[i]})).sort((a,b)=>b.b-a.b);
     const sts = settlements(g.bal, names);
-    const W = 1080, PAD = 72, ROW = 86, HEAD = 300;
-    const payRows = Math.max(sts.length, 1);
-    const H = HEAD + 70 + order.length*ROW + 60 + 70 + payRows*ROW + 150;
+    const W = 1080, PAD = 72, ROW = 128, HEAD = 300;
+    const H = HEAD + 10 + 94 + order.length*ROW + 150;
     const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
     const x = cv.getContext("2d");
     const disp = '"Baloo 2","Mukta","Segoe UI",sans-serif', body = '"Mukta","Noto Sans Devanagari","Segoe UI",sans-serif';
@@ -1029,19 +1042,33 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     let y = HEAD + 10 + 70;
     const heading = txt => { x.fillStyle = "#134A34"; x.font = "800 44px " + disp; x.textAlign = "left"; x.fillText(txt, PAD, y); y += 24; };
     const line = () => { x.fillStyle = "#DCE3DF"; x.fillRect(PAD, y, W - PAD*2, 2); };
-    const row = (left, right, color, sub) => {
-      line(); y += ROW - 26;
-      x.textAlign = "left"; x.fillStyle = "#17211D"; x.font = "600 40px " + body; x.fillText(left, PAD, y);
-      if(sub){ const w = x.measureText(left).width; x.fillStyle = "#5B6B64"; x.font = "500 30px " + body; x.fillText(" " + sub, PAD + w, y); }
-      x.textAlign = "right"; x.fillStyle = color; x.font = "800 44px " + disp; x.fillText(right, W - PAD, y);
-      y += 26;
+    // one table: each player's score, with who they pay (or collect from) underneath
+    const fit = (txt, max, font, size) => {
+      let s2 = size; x.font = font + " " + s2 + "px " + body;
+      while(x.measureText(txt).width > max && s2 > 22){ s2 -= 2; x.font = font + " " + s2 + "px " + body; }
+      return s2;
     };
-    heading(t("scores"));
-    order.forEach(o => row(o.n, signed(o.b), o.b > 0.004 ? "#1F7A47" : o.b < -0.004 ? "#B3261E" : "#5B6B64", state.seated[o.i] ? "" : "(" + t("settled") + ")"));
-    line(); y += 60 + 70 - 24;
-    heading(t("whoPays"));
-    if(sts.length) sts.forEach(s2 => row(t("pays")(s2.from, s2.to), t("rs") + " " + fmt(s2.amt), "#141414"));
-    else row(t("square"), "", "#141414");
+    const detail = o => {
+      if(!state.seated[o.i] && Math.abs(o.b) < 0.005) return t("settled");
+      if(o.b < -0.004) return t("payTo")(sts.filter(s2 => s2.from === o.n).map(s2 => t("payItem")(s2.to, fmt(s2.amt))).join(", "));
+      if(o.b > 0.004){
+        const from = sts.filter(s2 => s2.to === o.n).map(s2 => s2.from);
+        const full = t("getFrom")(from.join(", "));
+        x.font = "500 30px " + body;
+        return x.measureText(full).width > W - PAD*2 - 300 ? t("getFromN")(digits(from.length)) : full;
+      }
+      return t("squareP");
+    };
+    heading(t("scoresTitle"));
+    order.forEach(o => {
+      line(); y += 58;
+      const color = o.b > 0.004 ? "#1F7A47" : o.b < -0.004 ? "#B3261E" : "#5B6B64";
+      x.textAlign = "left"; x.fillStyle = "#17211D"; fit(o.n, W - PAD*2 - 300, "700", 42); x.fillText(o.n, PAD, y);
+      x.textAlign = "right"; x.fillStyle = color; x.font = "800 46px " + disp; x.fillText(signed(o.b), W - PAD, y + 14);
+      const dt = detail(o);
+      x.textAlign = "left"; x.fillStyle = "#5B6B64"; fit(dt, W - PAD*2 - 300, "500", 30); x.fillText(dt, PAD, y + 44);
+      y += ROW - 58;
+    });
     line();
     x.textAlign = "center"; x.fillStyle = "#9AAAA3"; x.font = "500 30px " + body;
     x.fillText(t("imgFoot"), W/2, H - 60);
@@ -1101,6 +1128,24 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   });
   document.addEventListener("focusout", () => setTimeout(fitViewport, 100));
   fitViewport();
+
+  /* visitor stats (GoatCounter: no cookies, no personal data) */
+  if(GOATCOUNTER){
+    const gc = document.createElement("script");
+    gc.async = true; gc.src = "https://gc.zgo.at/count.js";
+    gc.dataset.goatcounter = "https://" + GOATCOUNTER + ".goatcounter.com/count";
+    document.head.appendChild(gc);
+  }
+  /* feedback: opens the Tally form with a few details filled in (Tally hidden fields) */
+  document.querySelectorAll(".fb").forEach(b => {
+    b.classList.toggle("hidden", !FEEDBACK_URL);
+    b.onclick = () => {
+      const screen = !state ? "setup" : state.wrapped ? "settle" : "game";
+      const q = new URLSearchParams({lang, screen, players: state ? String(seatedIdx().length) : String(count),
+        games: state ? String(state.rounds.length) : "0", device: navigator.userAgent.slice(0, 180)});
+      window.open(FEEDBACK_URL + (FEEDBACK_URL.includes("?") ? "&" : "?") + q, "_blank", "noopener");
+    };
+  });
 
   state = load(); show();
 })();
