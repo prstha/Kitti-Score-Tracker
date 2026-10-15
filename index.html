@@ -463,6 +463,10 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       wrap:"Wrap up", wrapSub:"Settle and finish", settleTitle:"Settle up", settleLead:"Final tally. Download the image and share it so everyone can pay later.",
       download:"Download image", shareImg:"Share image", backGame:"Back to game", startOver:"New table",
       imgTitle:"Kitti settle-up", imgGames:n=>n+(n==1?" game":" games")+" played", imgFoot:"Kitti score tracker",
+      imgPer:s=>"Rs "+s+" per player, per game", stPlayed:"Total money played", stGames:"Games played", stBest:"Biggest win",
+      stGamesSub:(w,sl,k)=>w+" won · "+sl+" Salami · "+k+" Kitti", stBestSub:n=>"by "+n, stNoWin:"No wins yet",
+      colPlayer:"Player", colGames:"Games", colWins:"Wins", colNet:"Net", imgPlayers:"Players",
+      imgTotal:(x,n)=>"Total to settle: Rs "+x+" in "+n+(n==1?" payment":" payments"), imgPaysSub:"Pay by online transfer or cash",
       confirmNew:"Start a new table? This game's scores will be cleared.", undoRes:"Undo this result", hide:"Hide",
       rules:s=>"<p>Every player puts an equal share on the table each game. Right now that is Rs "+s+".</p><ul>"+
         "<li><b>Win</b> (2 of 3 hands): the winner takes all the money on the table.</li>"+
@@ -516,6 +520,10 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       wrap:"खेल सक्ने", wrapSub:"हिसाब मिलाएर अन्त्य", settleTitle:"हिसाब मिलान", settleLead:"अन्तिम हिसाब। तस्बिर डाउनलोड गरेर सेयर गर्नुहोस्, सबैले पछि तिर्न सक्छन्।",
       download:"तस्बिर डाउनलोड", shareImg:"तस्बिर सेयर", backGame:"खेलमा फर्कने", startOver:"नयाँ टेबल",
       imgTitle:"किट्टी हिसाब", imgGames:n=>n+" खेल खेलियो", imgFoot:"किट्टी स्कोर ट्र्याकर",
+      imgPer:s=>"प्रति खेल, प्रति खेलाडी रु "+s, stPlayed:"जम्मा खेलिएको रकम", stGames:"खेलिएका खेल", stBest:"सबैभन्दा ठूलो जित",
+      stGamesSub:(w,sl,k)=>"जित "+w+" · सलामी "+sl+" · किट्टी "+k, stBestSub:n=>n+" ले", stNoWin:"अहिलेसम्म जित छैन",
+      colPlayer:"खेलाडी", colGames:"खेल", colWins:"जित", colNet:"नतिजा", imgPlayers:"खेलाडीहरू",
+      imgTotal:(x,n)=>"जम्मा मिलाउनुपर्ने: रु "+x+" ("+n+" भुक्तानी)", imgPaysSub:"अनलाइन वा क्यासमा तिर्नुहोस्",
       confirmNew:"नयाँ टेबल सुरु गर्ने? यो खेलको स्कोर मेटिनेछ।", undoRes:"यो नतिजा फिर्ता", hide:"लुकाउने",
       rules:s=>"<p>हरेक खेलमा सबै खेलाडीले बराबर भाग टेबलमा राख्छन्। अहिले त्यो रु "+s+" हो।</p><ul>"+
         "<li><b>जित</b> (३ मध्ये २ हात): टेबलको सबै पैसा विजेताले लिन्छ।</li>"+
@@ -1010,17 +1018,38 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   let stBlob = null;
   function stFile(){ const d = new Date(), z = n => String(n).padStart(2,"0"); return "kitti-settle-up-"+d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+".png"; }
   function drawSettle(){
-    const g = compute(state), names = state.players;
+    const g = compute(state), names = state.players, P = names.length;
     const order = names.map((n,i)=>({n, i, b:g.bal[i]})).sort((a,b)=>b.b-a.b);
     const sts = settlements(g.bal, names);
-    const W = 1080, PAD = 72, ROW = 128, HEAD = 300;
-    const H = HEAD + 10 + 94 + order.length*ROW + 150;
+
+    // night totals: every share put on the table plus Salami extras; games and wins per player
+    let played = 0, won = 0, salamis = 0, kittis = 0;
+    const gamesP = new Array(P).fill(0), winsP = new Array(P).fill(0);
+    state.rounds.forEach(r => {
+      r.seated.forEach(p => gamesP[p]++);
+      played += r.share * r.seated.length;
+      if(r.type === "salami") played += r.share * (r.seated.length - 1);
+      if(r.type === "kitti"){ kittis++; return; }
+      winsP[r.winner]++;
+      if(r.type === "salami") salamis++; else won++;
+    });
+    let best = null;
+    g.log.forEach(e => { if(e.type !== "kitti" && (!best || e.total > best.total)) best = e; });
+    const owed = sts.reduce((a, s2) => a + s2.amt, 0);
+
+    const W = 1080, PAD = 72, HEAD = 300, ROW = 84, PROW = 100;
+    const H = HEAD + 10 + 56 + 170 + 60 + 64 + P*ROW + 104 + 44 + Math.max(sts.length, 1)*PROW + 60 + 140;
     const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
     const x = cv.getContext("2d");
     const disp = '"Baloo 2","Mukta","Segoe UI",sans-serif', body = '"Mukta","Noto Sans Devanagari","Segoe UI",sans-serif';
-    // paper
+    const fit = (txt, max, weight, size, fam) => {
+      let s2 = size; x.font = weight + " " + s2 + "px " + (fam || body);
+      while(x.measureText(txt).width > max && s2 > 20){ s2 -= 2; x.font = weight + " " + s2 + "px " + (fam || body); }
+    };
+    const rr = (x0, y0, w, h, r) => { x.beginPath(); x.moveTo(x0+r, y0); x.arcTo(x0+w, y0, x0+w, y0+h, r); x.arcTo(x0+w, y0+h, x0, y0+h, r); x.arcTo(x0, y0+h, x0, y0, r); x.arcTo(x0, y0, x0+w, y0, r); x.closePath(); };
+
+    // paper, green felt header, red line, black foot
     x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, W, H);
-    // green felt header with a black rim and a red line
     const gr = x.createRadialGradient(W/2, 60, 40, W/2, 120, W*.7);
     gr.addColorStop(0, "#2A8460"); gr.addColorStop(1, "#134A34");
     x.fillStyle = gr; x.fillRect(0, 0, W, HEAD);
@@ -1029,7 +1058,6 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     x.textBaseline = "alphabetic";
     x.fillStyle = "#FFFFFF"; x.font = "800 84px " + disp; x.textAlign = "left";
     x.fillText(t("imgTitle"), PAD, 140);
-    // suits: black and red
     const suits = [["♠","#141414"],["♥","#D7372B"],["♦","#D7372B"],["♣","#141414"]];
     x.font = "700 56px " + body; x.textAlign = "right";
     let sx = W - PAD;
@@ -1037,41 +1065,77 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     x.textAlign = "left"; x.fillStyle = "rgba(255,244,220,.85)"; x.font = "500 38px " + body;
     const d = new Date().toLocaleDateString(lang === "ne" ? "ne-NP" : "en-GB", {day:"numeric", month:"long", year:"numeric"});
     x.fillText(d + "  ·  " + t("imgGames")(digits(state.rounds.length)), PAD, 210);
-    x.fillText(t("rs") + " " + fmt(state.share) + " × " + digits(g.seated.length), PAD, 262);
+    x.fillText(t("imgPer")(fmt(state.share)), PAD, 262);
 
-    let y = HEAD + 10 + 70;
-    const heading = txt => { x.fillStyle = "#134A34"; x.font = "800 44px " + disp; x.textAlign = "left"; x.fillText(txt, PAD, y); y += 24; };
-    const line = () => { x.fillStyle = "#DCE3DF"; x.fillRect(PAD, y, W - PAD*2, 2); };
-    // one table: each player's score, with who they pay (or collect from) underneath
-    const fit = (txt, max, font, size) => {
-      let s2 = size; x.font = font + " " + s2 + "px " + body;
-      while(x.measureText(txt).width > max && s2 > 22){ s2 -= 2; x.font = font + " " + s2 + "px " + body; }
-      return s2;
+    let y = HEAD + 10 + 56;
+    const heading = (txt, sub) => {
+      x.textAlign = "left"; x.fillStyle = "#134A34"; x.font = "800 44px " + disp; x.fillText(txt, PAD, y);
+      if(sub){ const w = x.measureText(txt).width; x.fillStyle = "#5B6B64"; x.font = "500 28px " + body; x.fillText("  " + sub, PAD + w, y); }
     };
-    const detail = o => {
-      if(!state.seated[o.i] && Math.abs(o.b) < 0.005) return t("settled");
-      if(o.b < -0.004) return t("payTo")(sts.filter(s2 => s2.from === o.n).map(s2 => t("payItem")(s2.to, fmt(s2.amt))).join(", "));
-      if(o.b > 0.004){
-        const from = sts.filter(s2 => s2.to === o.n).map(s2 => s2.from);
-        const full = t("getFrom")(from.join(", "));
-        x.font = "500 30px " + body;
-        return x.measureText(full).width > W - PAD*2 - 300 ? t("getFromN")(digits(from.length)) : full;
-      }
-      return t("squareP");
+    const line = (yy, c) => { x.fillStyle = c || "#DCE3DF"; x.fillRect(PAD, yy, W - PAD*2, 2); };
+
+    // 1. summary: three stat boxes
+    const bw = (W - PAD*2 - 2*24) / 3, bh = 170;
+    const box = (i, label, value, sub, accent) => {
+      const bx = PAD + i*(bw + 24);
+      rr(bx, y, bw, bh, 22); x.fillStyle = "#F3F7F5"; x.fill();
+      x.fillStyle = accent; x.fillRect(bx, y + 22, 6, bh - 44);
+      x.textAlign = "left";
+      x.fillStyle = "#5B6B64"; fit(label, bw - 48, "600", 28); x.fillText(label, bx + 26, y + 48);
+      x.fillStyle = "#141414"; fit(value, bw - 48, "800", 54, disp); x.fillText(value, bx + 26, y + 112);
+      x.fillStyle = "#5B6B64"; fit(sub, bw - 48, "500", 24); x.fillText(sub, bx + 26, y + 148);
     };
-    heading(t("scoresTitle"));
-    order.forEach(o => {
-      line(); y += 58;
-      const color = o.b > 0.004 ? "#1F7A47" : o.b < -0.004 ? "#B3261E" : "#5B6B64";
-      x.textAlign = "left"; x.fillStyle = "#17211D"; fit(o.n, W - PAD*2 - 300, "700", 42); x.fillText(o.n, PAD, y);
-      x.textAlign = "right"; x.fillStyle = color; x.font = "800 46px " + disp; x.fillText(signed(o.b), W - PAD, y + 14);
-      const dt = detail(o);
-      x.textAlign = "left"; x.fillStyle = "#5B6B64"; fit(dt, W - PAD*2 - 300, "500", 30); x.fillText(dt, PAD, y + 44);
-      y += ROW - 58;
+    box(0, t("stPlayed"), t("rs") + " " + fmt(played), t("imgPer")(fmt(state.share)), "#22A06B");
+    box(1, t("stGames"), digits(state.rounds.length), t("stGamesSub")(digits(won), digits(salamis), digits(kittis)), "#141414");
+    box(2, t("stBest"), best ? t("rs") + " " + fmt(best.total) : "–", best ? t("stBestSub")(names[best.winner]) : t("stNoWin"), "#D7372B");
+    y += bh + 60;
+
+    // 2. players: games, wins, net
+    heading(t("imgPlayers")); y += 64;
+    const cG = 640, cW = 790;
+    x.fillStyle = "#5B6B64"; x.font = "700 26px " + body;
+    x.textAlign = "left"; x.fillText(t("colPlayer"), PAD, y - 16);
+    x.textAlign = "center"; x.fillText(t("colGames"), cG, y - 16); x.fillText(t("colWins"), cW, y - 16);
+    x.textAlign = "right"; x.fillText(t("colNet"), W - PAD, y - 16);
+    line(y - 2, "#9AAAA3");
+    order.forEach((o, k) => {
+      if(k % 2){ x.fillStyle = "#F7FAF8"; x.fillRect(PAD, y, W - PAD*2, ROW); }
+      const base = y + ROW/2 + 14;
+      x.textAlign = "left"; x.fillStyle = "#17211D"; fit(o.n, cG - PAD - 120, "700", 38); x.fillText(o.n, PAD + 8, base);
+      if(!state.seated[o.i]){ const w = x.measureText(o.n).width; x.fillStyle = "#9AAAA3"; x.font = "500 24px " + body; x.fillText(" (" + t("settled") + ")", PAD + 8 + w, base); }
+      x.textAlign = "center"; x.fillStyle = "#17211D"; x.font = "600 36px " + body;
+      x.fillText(digits(gamesP[o.i]), cG, base); x.fillText(digits(winsP[o.i]), cW, base);
+      x.textAlign = "right"; x.fillStyle = o.b > 0.004 ? "#1F7A47" : o.b < -0.004 ? "#B3261E" : "#5B6B64";
+      x.font = "800 42px " + disp; x.fillText(signed(o.b), W - PAD - 8, base);
+      y += ROW;
     });
-    line();
-    x.textAlign = "center"; x.fillStyle = "#9AAAA3"; x.font = "500 30px " + body;
-    x.fillText(t("imgFoot"), W/2, H - 60);
+    line(y);
+    y += 104;
+
+    // 3. who pays whom: one row per payment
+    heading(t("whoPays"), t("imgPaysSub")); y += 44;
+    if(!sts.length){
+      x.textAlign = "left"; x.fillStyle = "#5B6B64"; x.font = "600 36px " + body; x.fillText(t("square"), PAD, y + 60); y += PROW;
+    }
+    sts.forEach(s2 => {
+      rr(PAD, y + 8, W - PAD*2, PROW - 16, 18); x.fillStyle = "#FBF3F2"; x.fill();
+      const base = y + PROW/2 + 13, maxName = 290;
+      x.textAlign = "left";
+      x.fillStyle = "#B3261E"; fit(s2.from, maxName, "800", 38); x.fillText(s2.from, PAD + 26, base);
+      const fw = Math.min(x.measureText(s2.from).width, maxName);
+      x.fillStyle = "#141414"; x.font = "800 40px " + body; x.fillText("→", PAD + 46 + fw, base);
+      x.fillStyle = "#1F7A47"; fit(s2.to, maxName, "800", 38); x.fillText(s2.to, PAD + 110 + fw, base);
+      x.textAlign = "right"; x.fillStyle = "#141414"; x.font = "800 46px " + disp; x.fillText(t("rs") + " " + fmt(s2.amt), W - PAD - 26, base + 2);
+      y += PROW;
+    });
+    if(sts.length){
+      y += 50; x.textAlign = "left"; x.fillStyle = "#134A34"; x.font = "700 32px " + body;
+      x.fillText(t("imgTotal")(fmt(owed), digits(sts.length)), PAD, y);
+    }
+
+    // footer
+    x.textAlign = "center"; x.fillStyle = "#9AAAA3"; x.font = "500 28px " + body;
+    x.fillText(t("imgFoot") + "  ·  kitti-score-tracker.pages.dev", W/2, H - 64);
     return cv;
   }
   function renderSettle(){
