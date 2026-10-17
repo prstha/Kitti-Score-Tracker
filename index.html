@@ -195,6 +195,40 @@ details.sec[open] summary::after{content:"−"}
 .toast button{color:var(--gold);font-weight:700;padding:4px 8px;white-space:nowrap}
 .toast:not(.hidden) + .msg{display:none}
 
+/* undo, always there for the last action; a second tap confirms */
+.undo-row{display:flex;justify-content:center;margin-top:10px}
+.undo-btn{font-size:13px;font-weight:700;color:var(--cream);border:1px solid rgba(255,244,220,.3);border-radius:99px;padding:4px 12px;background:rgba(0,0,0,.22);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.undo-btn.arm{background:var(--red);border-color:var(--red);color:#fff}
+
+/* share with players */
+.top-r{display:flex;gap:8px;align-items:center}
+.share-top{background:var(--prime);color:#fff;padding:5px 12px;border-radius:99px;font-weight:700;font-size:15px}
+.share-top:hover{filter:brightness(1.08)}
+#shareUrl{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* read-only player view */
+.vw-status{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:-2px 2px 10px;font-size:13px;color:var(--soft)}
+.live{display:inline-flex;align-items:center;gap:7px;font-weight:700;color:var(--cream)}
+.live i{width:9px;height:9px;border-radius:50%;background:#5BC88A;animation:pulse 1.8s infinite}
+.live.snap i{background:#F2B53A;animation:none}
+.live.off i{background:#F07A70;animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(91,200,138,.6)}70%{box-shadow:0 0 0 8px rgba(91,200,138,0)}100%{box-shadow:0 0 0 0 rgba(91,200,138,0)}}
+@media (prefers-reduced-motion: reduce){.live i{animation:none}}
+.vw-panel{margin-top:14px}
+.vw-panel h1{font-size:22px;margin:0 0 8px}
+.vw-hint{color:var(--muted);margin:10px 0 0;font-size:15px}
+.vw-me{margin-top:14px;border-radius:14px;padding:14px;background:rgba(0,0,0,.04);border:1.5px solid var(--line)}
+.vw-me .big{font-family:var(--display);font-weight:800;font-size:30px;line-height:1.1}
+.vw-me .sub{color:var(--muted);font-size:14px;margin-top:2px}
+.vw-me .pay{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-weight:600}
+.vw-me .pay:first-of-type{margin-top:10px}
+.vw-me .pay b{font-family:var(--display)}
+.vw-list{padding:4px 14px}
+.vw-note{color:var(--soft);font-size:14px;text-align:center;margin:18px 4px 12px}
+.vw-cta{display:block;text-align:center;text-decoration:none;margin-top:6px}
+.vw-err{text-align:center;padding:30px 16px}
+.vw-err p{color:var(--muted)}
+
 /* setup */
 .panel{background:var(--panel);color:var(--ink);border-radius:18px;padding:18px}
 .panel h1{font-size:26px;margin:0 0 2px;line-height:1.2}
@@ -290,7 +324,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
  <div class="wrap">
   <div class="top">
     <div class="brand"><span data-t="brand"></span><span class="s"><i>♠</i><i class="r">♥</i><i class="r">♦</i><i>♣</i></span></div>
-    <button class="lang langBtn"></button>
+    <div class="top-r"><button class="share-top shareBtn"></button><button class="lang langBtn"></button></div>
   </div>
 
   <div class="tools">
@@ -314,6 +348,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       <div class="pick"><h2 id="pickTitle"></h2><button class="rd" id="redealBtn" data-t="redeal"></button></div>
       <div class="hand" id="hand" role="radiogroup"></div>
       <div class="taphint" data-t="tapHint"></div>
+      <div class="undo-row"><button class="undo-btn hidden" id="undoBtn"></button></div>
     </div>
     <div class="result hidden" id="result"></div>
   </div>
@@ -360,7 +395,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
  <div class="wrap">
   <div class="top">
     <div class="brand"><span data-t="brand"></span><span class="s"><i>♠</i><i class="r">♥</i><i class="r">♦</i><i>♣</i></span></div>
-    <button class="lang langBtn"></button>
+    <div class="top-r"><button class="share-top shareBtn"></button><button class="lang langBtn"></button></div>
   </div>
   <div class="panel">
     <h1 data-t="settleTitle"></h1>
@@ -378,6 +413,49 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   <button class="fb hidden" data-t="feedback"></button>
  </div>
 </section>
+
+<!-- READ-ONLY VIEW for the other players (opened from a shared link) -->
+<section id="viewer" class="hidden">
+ <div class="wrap">
+  <div class="top">
+    <div class="brand"><span data-t="brand"></span><span class="s"><i>♠</i><i class="r">♥</i><i class="r">♦</i><i>♣</i></span></div>
+    <button class="lang langBtn"></button>
+  </div>
+  <div id="vwBody">
+    <div class="vw-status"><span class="live" id="vwLive"><i></i><span id="vwLiveTxt"></span></span><span id="vwAgo"></span></div>
+    <div class="table">
+      <div class="trow"><span class="tpill" id="vwRound"></span><span class="tpill" id="vwShare"></span></div>
+      <div class="total">
+        <div class="lbl" data-t="onTable"></div>
+        <div class="amt"><small data-t="rs"></small><span id="vwPot">0</span></div>
+        <div class="note" id="vwNote"></div>
+      </div>
+    </div>
+    <div class="panel vw-panel">
+      <h1 data-t="vwWho"></h1>
+      <div class="quick" id="vwPeople" role="group"></div>
+      <div id="vwMe"></div>
+    </div>
+    <h2 class="sec-title" data-t="vwStand"></h2>
+    <div class="panel vw-list" id="vwAll"></div>
+    <h2 class="sec-title" data-t="vwRecent"></h2>
+    <div class="panel vw-list log" id="vwLog"></div>
+    <p class="vw-note" id="vwFoot"></p>
+  </div>
+  <div class="panel vw-err hidden" id="vwErr"><h1 data-t="vwOops"></h1><p id="vwErrMsg"></p></div>
+  <a class="go vw-cta" href="./" data-t="vwOwn"></a>
+ </div>
+</section>
+
+<!-- share with players -->
+<div class="scrim hidden" id="sShare" role="dialog" aria-modal="true" aria-labelledby="shareT"><div class="sheet">
+  <h3 id="shareT" data-t="shareTitle"></h3>
+  <p id="shareInfo"></p>
+  <input id="shareUrl" type="text" readonly>
+  <div class="err" id="shareErr"></div>
+  <div class="two"><button class="ghost" id="shareCopy" data-t="copyLink"></button><button class="okb" id="shareSend" data-t="sendLink"></button></div>
+  <button class="ghost" data-close="sShare" data-t="close" style="width:100%;margin-top:10px"></button>
+</div></div>
 
 <!-- add player -->
 <div class="scrim hidden" id="sAdd" role="dialog" aria-modal="true" aria-labelledby="addT"><div class="sheet">
@@ -417,7 +495,11 @@ body.kb .rail,body.kb .toast{visibility:hidden}
 
 <script>
 (function(){
-  const KEY = "kitti-scorekeeper-v3", OLDKEYS = ["kitti-scorekeeper-v2","kitti-scorekeeper-v1"], LKEY = "kitti-lang";
+  const KEY = "kitti-scorekeeper-v3", OLDKEYS = ["kitti-scorekeeper-v2","kitti-scorekeeper-v1"], LKEY = "kitti-lang", LIVEKEY = "kitti-live";
+  const API = "api/table/";
+  // a shared link opens the read-only player view: ?t=<id> is live, #s=<data> is a snapshot
+  const VIEW_ID = (new URLSearchParams(location.search).get("t") || "").match(/^[a-z0-9]{8,24}$/) ? new URLSearchParams(location.search).get("t") : null;
+  const VIEW_SNAP = !VIEW_ID && location.hash.startsWith("#s=") ? location.hash.slice(3) : null;
   // fill these in to switch on visitor stats and the "Report a problem" button
   const GOATCOUNTER = "";   // GoatCounter site code, e.g. "kitti" for kitti.goatcounter.com
   const FEEDBACK_URL = "";  // Tally form link, e.g. "https://tally.so/r/abc123"
@@ -468,6 +550,20 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       colPlayer:"Player", colGames:"Games", colWins:"Wins", colNet:"Net", imgPlayers:"Players",
       imgTotal:(x,n)=>"Total to settle: Rs "+x+" in "+n+(n==1?" payment":" payments"), imgPaysSub:"Pay by online transfer or cash",
       confirmNew:"Start a new table? This game's scores will be cleared.", undoRes:"Undo this result", hide:"Hide",
+      undoBtn:d=>"↶ Undo: "+d, undoArm:d=>"Tap again to undo "+d, undone:d=>"Undone: "+d+".",
+      dRound:(n,x)=>"game "+n+" ("+x+")", dNext:n=>"starting game "+n, dJoin:n=>n+" joining", dLeave:n=>n+" leaving", dPot:"the amount change", dRedeal:"the redeal",
+      shareBtn:"Share", shareTitle:"Let the players follow along", shareMaking:"Creating the link…",
+      shareLive:"Anyone with this link sees the money on the table and what they owe, updated live. They can't change anything.",
+      shareSnap:"This link shows the scores as they are right now. Share it again later for the latest numbers.",
+      copyLink:"Copy link", sendLink:"Send", copied:"Link copied.", close:"Close", shareMsg:"Follow our Kitti table:",
+      vwWho:"Who are you?", vwPick:"Tap your name to see what you owe or get.", vwUp:x=>"You're up Rs "+x, vwOwe:x=>"You owe Rs "+x, vwSquare:"You're square",
+      vwPay:n=>"Pay "+n, vwGet:n=>"Get from "+n, vwStats:(g,w)=>g+(g==1?" game":" games")+" played · "+w+" won", vwOnTable:x=>"Rs "+x+" of yours is on the table right now.",
+      vwStand:"Everyone", vwRecent:"Recent games", vwNoGames:"No games yet.", vwLive:"Live", vwSnapL:"Snapshot", vwOffL:"Reconnecting…",
+      vwAgo:s=>s<10?"Updated just now":s<60?"Updated "+s+"s ago":"Updated "+Math.round(s/60)+" min ago", vwAt:tm=>"Taken at "+tm,
+      vwLiveNote:"Read-only. This page updates by itself while the host plays.", vwSnapNote:"This is a snapshot. Ask the host to share again for the latest numbers.",
+      vwDone:"This table has wrapped up. These are the final numbers.", vwOwn:"Start your own table", vwOops:"Can't open this table",
+      vwGone:"This link has expired or the table no longer exists. Ask the host for a new link.", vwBad:"This link looks broken. Ask the host to share it again.",
+      vwLast:(n,w,x)=>"Game "+n+": "+w+" won Rs "+x, vwLastKitti:(n,x)=>"Game "+n+": Kitti, Rs "+x+" on the table", vwLeft:"left",
       rules:s=>"<p>Every player puts an equal share on the table each game. Right now that is Rs "+s+".</p><ul>"+
         "<li><b>Win</b> (2 of 3 hands): the winner takes all the money on the table.</li>"+
         "<li><b>Salami</b> (3 of 3 hands): the winner takes the table, and every loser pays one extra share.</li>"+
@@ -525,6 +621,20 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       colPlayer:"खेलाडी", colGames:"खेल", colWins:"जित", colNet:"नतिजा", imgPlayers:"खेलाडीहरू",
       imgTotal:(x,n)=>"जम्मा मिलाउनुपर्ने: रु "+x+" ("+n+" भुक्तानी)", imgPaysSub:"अनलाइन वा क्यासमा तिर्नुहोस्",
       confirmNew:"नयाँ टेबल सुरु गर्ने? यो खेलको स्कोर मेटिनेछ।", undoRes:"यो नतिजा फिर्ता", hide:"लुकाउने",
+      undoBtn:d=>"↶ फिर्ता: "+d, undoArm:d=>d+" फिर्ता गर्न फेरि थिच्नुहोस्", undone:d=>d+" फिर्ता भयो।",
+      dRound:(n,x)=>"खेल "+n+" ("+x+")", dNext:n=>"खेल "+n+" सुरु", dJoin:n=>n+" थपिएको", dLeave:n=>n+" छोडेको", dPot:"रकम परिवर्तन", dRedeal:"फेरि बाँडेको",
+      shareBtn:"सेयर", shareTitle:"खेलाडीहरूलाई हेर्न दिनुहोस्", shareMaking:"लिंक बनाउँदै…",
+      shareLive:"यो लिंक भएका जोकोहीले टेबलको पैसा र आफूले तिर्ने/पाउने रकम लाइभ हेर्न सक्छन्। केही बदल्न सक्दैनन्।",
+      shareSnap:"यो लिंकले अहिलेको स्कोर देखाउँछ। पछि नयाँ हिसाबका लागि फेरि सेयर गर्नुहोस्।",
+      copyLink:"लिंक कपी", sendLink:"पठाउने", copied:"लिंक कपी भयो।", close:"बन्द", shareMsg:"हाम्रो किट्टी टेबल हेर्नुहोस्:",
+      vwWho:"तपाईं को हो?", vwPick:"आफूले तिर्ने वा पाउने रकम हेर्न आफ्नो नाम थिच्नुहोस्।", vwUp:x=>"तपाईं रु "+x+" जितमा", vwOwe:x=>"तपाईंले रु "+x+" तिर्नुपर्छ", vwSquare:"तपाईंको हिसाब बराबर",
+      vwPay:n=>n+" लाई तिर्ने", vwGet:n=>n+" बाट पाउने", vwStats:(g,w)=>g+" खेल खेलियो · "+w+" जित", vwOnTable:x=>"तपाईंको रु "+x+" अहिले टेबलमा छ।",
+      vwStand:"सबैको हिसाब", vwRecent:"पछिल्ला खेल", vwNoGames:"अहिलेसम्म कुनै खेल छैन।", vwLive:"लाइभ", vwSnapL:"स्न्यापसट", vwOffL:"जोडिँदै…",
+      vwAgo:s=>s<10?"भर्खरै अपडेट":s<60?s+" सेकेन्ड अघि अपडेट":Math.round(s/60)+" मिनेट अघि अपडेट", vwAt:tm=>tm+" को",
+      vwLiveNote:"हेर्न मात्र मिल्छ। होस्टले खेल्दै गर्दा यो पेज आफैँ अपडेट हुन्छ।", vwSnapNote:"यो स्न्यापसट हो। नयाँ हिसाबका लागि होस्टलाई फेरि सेयर गर्न भन्नुहोस्।",
+      vwDone:"यो टेबलको खेल सकियो। यो अन्तिम हिसाब हो।", vwOwn:"आफ्नै टेबल सुरु गर्नुहोस्", vwOops:"यो टेबल खुलेन",
+      vwGone:"यो लिंकको म्याद सकियो वा टेबल छैन। होस्टसँग नयाँ लिंक माग्नुहोस्।", vwBad:"यो लिंक बिग्रिएको जस्तो छ। होस्टलाई फेरि सेयर गर्न भन्नुहोस्।",
+      vwLast:(n,w,x)=>"खेल "+n+": "+w+" ले रु "+x+" जित्यो", vwLastKitti:(n,x)=>"खेल "+n+": किट्टी, टेबलमा रु "+x, vwLeft:"छोडेको",
       rules:s=>"<p>हरेक खेलमा सबै खेलाडीले बराबर भाग टेबलमा राख्छन्। अहिले त्यो रु "+s+" हो।</p><ul>"+
         "<li><b>जित</b> (३ मध्ये २ हात): टेबलको सबै पैसा विजेताले लिन्छ।</li>"+
         "<li><b>सलामी</b> (३ मध्ये ३ हात): विजेताले टेबलको पैसा लिन्छ, र हरेक हार्नेले एक भाग थप तिर्छ।</li>"+
@@ -557,7 +667,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   const fourOn = () => !!(state && state.rules && state.rules.four);
 
   /* ---------- storage ---------- */
-  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} livePush(); }
   function load(){
     try{
       let s = JSON.parse(localStorage.getItem(KEY) || "null");
@@ -686,11 +796,14 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     document.documentElement.lang = lang === "ne" ? "ne" : "en";
     document.querySelectorAll("[data-t]").forEach(el => { const v = t(el.dataset.t); if(typeof v === "string") el.textContent = v; });
     document.querySelectorAll(".langBtn").forEach(b => b.textContent = t("langBtn"));
+    document.querySelectorAll(".shareBtn").forEach(b => b.textContent = t("shareBtn"));
   }
   document.querySelectorAll(".langBtn").forEach(b => b.onclick = () => {
     lang = lang === "en" ? "ne" : "en";
     try{ localStorage.setItem(LKEY, lang); }catch(e){}
-    applyText(); state ? (state.wrapped ? renderSettle() : renderGame(false)) : renderSetup();
+    applyText();
+    if(VIEW_ID || VIEW_SNAP){ renderViewer(); return; }
+    state ? (state.wrapped ? renderSettle() : renderGame(false)) : renderSetup();
     if(state && !$("sLeave").classList.contains("hidden")) renderLeave();
   });
 
@@ -790,6 +903,11 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       c.onclick = () => { selected = selected === i ? null : i; renderGame(false); };
       hand.appendChild(c);
     });
+
+    // undo for the last action, available any time (not just while the notification shows)
+    const ud = lastActionDesc();
+    $("undoBtn").classList.toggle("hidden", !ud);
+    if(ud){ $("undoBtn").textContent = undoArmed ? t("undoArm")(ud) : t("undoBtn")(ud); $("undoBtn").classList.toggle("arm", undoArmed); }
 
     $("tAdd").disabled = g.seated.length >= MAX;
     $("tLeave").disabled = g.seated.length <= MIN;
@@ -893,11 +1011,39 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   $("ovAdd").onclick = () => $("tAdd").click();
   $("ovLeave").onclick = () => $("tLeave").click();
 
-  /* one undo for the most recent action: a game, starting the next game, join, leave or pot change */
-  function act(kind){ (state.actions = state.actions || []).push(kind); }
+  /* undo steps back through actions one at a time: a game, starting the next game, join, leave, amount change, redeal */
+  function act(kind){ (state.actions = state.actions || []).push(kind); undoArmed = false; }
+  // what the next undo would reverse, in words, e.g. "game 3 (Kitti)"
+  function lastActionDesc(){
+    const a = (state.actions || [])[state.actions.length - 1];
+    if(a === "round"){
+      const r = state.rounds[state.rounds.length - 1], who = r.winner != null ? state.players[r.winner] : "";
+      const what = r.type === "kitti" ? t("kitti") : r.type === "salami" ? who + " · " + t("salami") : r.type === "four" ? who + " · " + t("four") : t("logWon")(who);
+      return t("dRound")(digits(state.rounds.length), what);
+    }
+    if(a === "next") return t("dNext")(digits(state.rounds.length + 1));
+    if(a === "event"){
+      const e = state.events[state.events.length - 1];
+      if(!e) return null;
+      return e.type === "join" ? t("dJoin")(state.players[e.p]) : e.type === "leave" ? t("dLeave")(state.players[e.p]) : e.type === "redeal" ? t("dRedeal") : t("dPot");
+    }
+    return null;
+  }
+  // the always-there undo button asks for a second tap, so it can't fire by accident
+  let undoArmed = false, undoArmTimer = null;
+  $("undoBtn").onclick = () => {
+    const d = lastActionDesc();
+    if(!d) return;
+    if(!undoArmed){
+      undoArmed = true; renderGame(false);
+      clearTimeout(undoArmTimer); undoArmTimer = setTimeout(() => { undoArmed = false; if(state && !state.wrapped) renderGame(false); }, 4000);
+      return;
+    }
+    undo(); toast(t("undone")(d), true);
+  };
   function undo(){
     const a = (state.actions || []).pop();
-    ovMin = false;
+    ovMin = false; undoArmed = false; clearTimeout(undoArmTimer);
     if(a === "next") state.waiting = true;
     else if(a === "round"){ state.rounds.pop(); state.waiting = false; }
     else if(a === "event"){
@@ -908,8 +1054,9 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     }
     save(); renderGame(false); $("toast").classList.add("hidden");
   }
-  function toast(msg){
+  function toast(msg, noUndo){
     $("toastMsg").textContent = msg; $("toast").classList.remove("hidden");
+    $("toastUndo").classList.toggle("hidden", !!noUndo);
     clearTimeout(toastTimer); toastTimer = setTimeout(() => $("toast").classList.add("hidden"), 5000);
   }
   $("toastUndo").onclick = undo;
@@ -1000,6 +1147,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     draftFour = !!(state.rules && state.rules.four);
     state = null; selected = null; $("toast").classList.add("hidden");
     try{ localStorage.removeItem(KEY); OLDKEYS.forEach(k => localStorage.removeItem(k)); }catch(e){}
+    liveForget();   // a new table gets a new share link
     show();
   }
 
@@ -1016,7 +1164,9 @@ body.kb .rail,body.kb .toast{visibility:hidden}
 
   /* ---------- settle up: a shareable image of the final tally ---------- */
   let stBlob = null;
-  function stFile(){ const d = new Date(), z = n => String(n).padStart(2,"0"); return "kitti-settle-up-"+d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+".png"; }
+  // date and time in the name, so a second table's image never overwrites the first
+  function stFile(){ const d = new Date(), z = n => String(n).padStart(2,"0");
+    return "kitti-settle-up-"+d.getFullYear()+"-"+z(d.getMonth()+1)+"-"+z(d.getDate())+"_"+z(d.getHours())+"-"+z(d.getMinutes())+"-"+z(d.getSeconds())+".png"; }
   function drawSettle(){
     const g = compute(state), names = state.players, P = names.length;
     const order = names.map((n,i)=>({n, i, b:g.bal[i]})).sort((a,b)=>b.b-a.b);
@@ -1211,7 +1361,170 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     };
   });
 
-  state = load(); show();
+  /* ---------- share with players ----------
+     Live: the table is stored by a Cloudflare Pages Function (functions/api/table/[id].js) and players
+     open ?t=<id>; the host's device pushes every change. If that isn't available (no KV binding, or the
+     GitHub Pages copy), the link carries a snapshot of the table in the #s= fragment instead. */
+  function rid(n){ const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(b => "abcdefghijkmnpqrstuvwxyz23456789"[b % 32]).join(""); }
+  let live = null, pushTimer = null;
+  try{ live = JSON.parse(localStorage.getItem(LIVEKEY) || "null"); }catch(e){}
+  function liveForget(){ live = null; clearTimeout(pushTimer); try{ localStorage.removeItem(LIVEKEY); }catch(e){} }
+  function livePush(){ if(!live || !state) return; clearTimeout(pushTimer); pushTimer = setTimeout(sendLive, 1500); }
+  async function sendLive(){
+    if(!live || !state) return false;
+    try{
+      const body = Object.assign({}, state); delete body.actions;
+      const r = await fetch(API + live.id, {method:"PUT", headers:{"content-type":"application/json"}, body:JSON.stringify({key:live.key, state:body})});
+      return r.ok;
+    }catch(e){ return false; }
+  }
+  const b64u = bytes => btoa(String.fromCharCode(...bytes)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  const unb64u = s => Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")), c => c.charCodeAt(0));
+  async function pipe(bytes, stream){ return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer()); }
+  async function encodeSnap(){
+    const body = Object.assign({}, state); delete body.actions;
+    const raw = new TextEncoder().encode(JSON.stringify({state:body, at:Date.now()}));
+    if(window.CompressionStream) return "z" + b64u(await pipe(raw, new CompressionStream("deflate-raw")));
+    return "j" + b64u(raw);
+  }
+  async function decodeSnap(s){
+    const bytes = unb64u(s.slice(1));
+    const raw = s[0] === "z" ? await pipe(bytes, new DecompressionStream("deflate-raw")) : bytes;
+    return JSON.parse(new TextDecoder().decode(raw));
+  }
+  const baseUrl = () => location.origin + location.pathname;
+  let shareLink = "";
+  async function openShare(){
+    $("shareInfo").textContent = t("shareMaking"); $("shareUrl").value = ""; $("shareErr").textContent = "";
+    open("sShare");
+    let fresh = false;
+    if(!live){ live = {id: rid(12), key: rid(28)}; fresh = true; }
+    if(await sendLive()){
+      if(fresh) try{ localStorage.setItem(LIVEKEY, JSON.stringify(live)); }catch(e){}
+      shareLink = baseUrl() + "?t=" + live.id;
+      $("shareInfo").textContent = t("shareLive");
+    } else {
+      if(fresh) live = null;
+      shareLink = baseUrl() + "#s=" + await encodeSnap();
+      $("shareInfo").textContent = t("shareSnap");
+    }
+    $("shareUrl").value = shareLink;
+  }
+  document.querySelectorAll(".shareBtn").forEach(b => b.onclick = openShare);
+  $("shareUrl").onfocus = e => e.target.select();
+  $("shareCopy").onclick = async () => {
+    if(!shareLink) return;
+    try{ await navigator.clipboard.writeText(shareLink); }catch(e){ $("shareUrl").select(); document.execCommand && document.execCommand("copy"); }
+    $("shareErr").textContent = t("copied");
+  };
+  $("shareSend").onclick = () => {
+    if(!shareLink) return;
+    if(navigator.share) navigator.share({title: t("brand"), text: t("shareMsg"), url: shareLink}).catch(() => {});
+    else $("shareCopy").click();
+  };
+
+  /* ---------- read-only view for the players ---------- */
+  let vState = null, vAt = 0, vMe = null, vOk = true, vTimer = null;
+  const ME_KEY = "kitti-me-" + (VIEW_ID || "snap");
+  function viewerError(msg){
+    $("vwBody").classList.add("hidden"); $("vwErr").classList.remove("hidden");
+    $("vwErrMsg").textContent = msg;
+  }
+  async function pollView(){
+    try{
+      const r = await fetch(API + VIEW_ID, {cache:"no-store"});
+      if(r.status === 404 || r.status === 400){ viewerError(t("vwGone")); clearInterval(vTimer); return; }
+      if(!r.ok) throw new Error(r.status);
+      const j = await r.json();
+      vState = j.state; vAt = j.at; vOk = true;
+    }catch(e){ vOk = false; }
+    if(vState) renderViewer();
+  }
+  function startViewer(){
+    ["setup","game","settle"].forEach(id => $(id).classList.add("hidden"));
+    $("viewer").classList.remove("hidden");
+    applyText();
+    try{ const m = localStorage.getItem(ME_KEY); vMe = m == null ? null : +m; }catch(e){}
+    if(VIEW_ID){
+      pollView();
+      vTimer = setInterval(() => { if(!document.hidden) pollView(); }, 5000);
+      setInterval(() => { if(vState) renderViewer(); }, 15000);   // keeps "updated … ago" fresh
+      document.addEventListener("visibilitychange", () => { if(!document.hidden) pollView(); });
+    } else {
+      decodeSnap(VIEW_SNAP).then(j => { vState = j.state; vAt = j.at; renderViewer(); }).catch(() => viewerError(t("vwBad")));
+    }
+  }
+  function renderViewer(){
+    if(!vState) return;
+    const s = vState, g = compute(s), names = s.players;
+    const waiting = !!s.waiting && s.rounds.length > 0;
+    const shown = waiting ? s.rounds.length : s.rounds.length + 1;
+
+    // status line: live, snapshot or reconnecting
+    const lv = $("vwLive");
+    lv.classList.toggle("snap", !VIEW_ID); lv.classList.toggle("off", !!VIEW_ID && !vOk);
+    $("vwLiveTxt").textContent = !VIEW_ID ? t("vwSnapL") : vOk ? t("vwLive") : t("vwOffL");
+    $("vwAgo").textContent = VIEW_ID ? t("vwAgo")(Math.max(0, Math.round((Date.now() - vAt) / 1000)))
+      : t("vwAt")(new Date(vAt).toLocaleString(lang === "ne" ? "ne-NP" : "en-GB", {hour:"numeric", minute:"2-digit", day:"numeric", month:"short"}));
+
+    // the table right now
+    $("vwRound").innerHTML = t("round")(digits(shown));
+    $("vwShare").innerHTML = t("share")(fmt(s.share));
+    $("vwPot").textContent = fmt(waiting || s.wrapped ? 0 : g.table);
+    const last = g.log[g.log.length - 1];
+    let note = "";
+    if(s.wrapped) note = t("vwDone");
+    else if(last && last.type !== "kitti" && waiting) note = esc(t("vwLast")(digits(last.i + 1), names[last.winner], fmt(last.total)));
+    else if(g.carry > 0.004) note = t("noteKitti")(fmt(g.carry), digits(g.kittis));
+    $("vwNote").innerHTML = note;
+
+    // who are you? one chip per player
+    const ppl = $("vwPeople"); ppl.innerHTML = ""; ppl.setAttribute("aria-label", t("vwWho"));
+    names.forEach((n, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = n; b.setAttribute("aria-pressed", vMe === i);
+      b.onclick = () => { vMe = vMe === i ? null : i; try{ vMe == null ? localStorage.removeItem(ME_KEY) : localStorage.setItem(ME_KEY, vMe); }catch(e){} renderViewer(); };
+      ppl.appendChild(b);
+    });
+
+    // your numbers: net, exactly who you pay or get from, games and wins
+    const sts = settlements(g.bal, names);
+    let me = '<p class="vw-hint">' + esc(t("vwPick")) + '</p>';
+    if(vMe != null && vMe < names.length){
+      const b = g.bal[vMe], n = names[vMe];
+      let games = 0, wins = 0;
+      s.rounds.forEach(r => { if(r.seated.includes(vMe)) games++; if(r.winner === vMe) wins++; });
+      const big = b > 0.004 ? t("vwUp")(fmt(b)) : b < -0.004 ? t("vwOwe")(fmt(-b)) : t("vwSquare");
+      me = '<div class="vw-me"><div class="big ' + cls(b) + '">' + esc(big) + '</div>' +
+           '<div class="sub">' + esc(t("vwStats")(digits(games), digits(wins))) + '</div>';
+      sts.forEach(x => {
+        if(x.from === n) me += '<div class="pay"><span>' + esc(t("vwPay")(x.to)) + '</span><b class="neg">' + t("rs") + ' ' + fmt(x.amt) + '</b></div>';
+        if(x.to === n) me += '<div class="pay"><span>' + esc(t("vwGet")(x.from)) + '</span><b class="pos">' + t("rs") + ' ' + fmt(x.amt) + '</b></div>';
+      });
+      if(!s.wrapped && !waiting && s.seated[vMe] && g.onTable[vMe] > 0.004) me += '<div class="sub">' + esc(t("vwOnTable")(fmt(g.onTable[vMe]))) + '</div>';
+      me += '</div>';
+    }
+    $("vwMe").innerHTML = me;
+
+    // everyone, best first
+    $("vwAll").innerHTML = names.map((n, i) => ({n, i, b: g.bal[i]})).sort((a, b) => b.b - a.b).map(o =>
+      '<div class="line"><span>' + esc(o.n) + (s.seated[o.i] ? '' : '<span class="tagleft">(' + esc(t("vwLeft")) + ')</span>') + '</span>' +
+      '<b class="num ' + cls(o.b) + '">' + signed(o.b) + '</b></div>').join("");
+
+    // last few games, newest first
+    const recent = g.log.slice(-6).reverse();
+    $("vwLog").innerHTML = recent.length ? recent.map(e => e.type === "kitti"
+      ? '<div class="r"><div class="no">' + digits(e.i + 1) + '</div><div><div class="what">' + t("logKitti") + '<span class="badge k">' + t("rs") + ' ' + fmt(e.table) + '</span></div></div></div>'
+      : '<div class="r"><div class="no">' + digits(e.i + 1) + '</div><div><div class="what">' + esc(t("logWon")(names[e.winner])) +
+        (e.type === "salami" ? '<span class="badge s">' + t("salami") + '</span>' : e.type === "four" ? '<span class="badge f">' + t("four") + '</span>' : '') +
+        '</div><div class="detail">' + t("rs") + ' ' + fmt(e.total) + '</div></div></div>').join("")
+      : '<div class="empty">' + t("vwNoGames") + '</div>';
+
+    $("vwFoot").textContent = VIEW_ID ? t("vwLiveNote") : t("vwSnapNote");
+  }
+
+  if(VIEW_ID || VIEW_SNAP) startViewer();
+  else { state = load(); show(); }
 })();
 </script>
 </body>
