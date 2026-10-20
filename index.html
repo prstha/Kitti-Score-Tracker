@@ -229,6 +229,14 @@ details.sec[open] summary::after{content:"−"}
 .vw-err{text-align:center;padding:30px 16px}
 .vw-err p{color:var(--muted)}
 
+/* control: one scorekeeper at a time, handed over on request */
+.ctl-req{display:flex;flex-direction:column;gap:10px;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--panel);color:var(--ink);border:2px solid var(--red)}
+.ctl-req b{font-size:16px}
+.ctl-req .two{margin-top:0}
+.ctl-box{margin:0 0 12px;display:flex;flex-direction:column;gap:10px;padding:14px}
+.ctl-box p{margin:0;color:var(--ink);font-weight:600;font-size:15px}
+.ctl-box .flash{color:var(--gain);font-weight:700}
+
 /* setup */
 .panel{background:var(--panel);color:var(--ink);border-radius:18px;padding:18px}
 .panel h1{font-size:26px;margin:0 0 2px;line-height:1.2}
@@ -327,6 +335,11 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     <div class="top-r"><button class="share-top shareBtn"></button><button class="lang langBtn"></button></div>
   </div>
 
+  <div class="ctl-req hidden" id="ctlReq" role="alert">
+    <b id="ctlReqTxt"></b>
+    <div class="two"><button class="ghost" id="ctlNo" data-t="ctlNo"></button><button class="okb" id="ctlYes" data-t="ctlYes"></button></div>
+  </div>
+
   <div class="tools">
     <button class="tool" id="tAdd"><span class="ic">+</span><span data-t="toolAdd"></span></button>
     <button class="tool" id="tPot"><span class="ic" data-t="rs"></span><span data-t="toolPot"></span></button>
@@ -423,6 +436,10 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   </div>
   <div id="vwBody">
     <div class="vw-status"><span class="live" id="vwLive"><i></i><span id="vwLiveTxt"></span></span><span id="vwAgo"></span></div>
+    <div class="panel ctl-box hidden" id="vwCtl">
+      <p><span class="flash" id="vwCtlFlash"></span> <span id="vwCtlTxt"></span></p>
+      <button class="okb hidden" id="vwCtlBtn"></button>
+    </div>
     <div class="table">
       <div class="trow"><span class="tpill" id="vwRound"></span><span class="tpill" id="vwShare"></span></div>
       <div class="total">
@@ -454,6 +471,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   <input id="shareUrl" type="text" readonly>
   <div class="err" id="shareErr"></div>
   <div class="two"><button class="ghost" id="shareCopy" data-t="copyLink"></button><button class="okb" id="shareSend" data-t="sendLink"></button></div>
+  <button class="ghost hidden" id="shareLeave" data-t="ctlLeaveBtn" style="width:100%;margin-top:10px"></button>
   <button class="ghost" data-close="sShare" data-t="close" style="width:100%;margin-top:10px"></button>
 </div></div>
 
@@ -564,6 +582,13 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       vwDone:"This table has wrapped up. These are the final numbers.", vwOwn:"Start your own table", vwOops:"Can't open this table",
       vwGone:"This link has expired or the table no longer exists. Ask the host for a new link.", vwBad:"This link looks broken. Ask the host to share it again.",
       vwLast:(n,w,x)=>"Game "+n+": "+w+" won Rs "+x, vwLastKitti:(n,x)=>"Game "+n+": Kitti, Rs "+x+" on the table", vwLeft:"left",
+      ctlReq:n=>(n || "A player")+" wants to keep score.", ctlYes:"Hand over", ctlNo:"Decline",
+      ctlLeaveBtn:"Leave & let someone take over", ctlLeaveAsk:"Let anyone with the link take over keeping score? This phone will only watch.",
+      ctlLost:"Someone else is keeping score now. This phone is watching.", ctlGave:"You handed over control. This phone is watching now.", ctlLeft:"You left. Anyone with the link can take over.",
+      vcIn:n=>(n ? n+" is" : "The host is")+" keeping score.", vcAsk:"Ask for control", vcWait:n=>"Asked "+(n || "the host")+" for control. Waiting…",
+      vcCancel:"Cancel request", vcOther:n=>(n || "Someone")+" has asked for control.", vcTake:"Take control",
+      vcFree:"Nobody is keeping score right now. Anyone with this link can take over.", vcGot:"You're keeping score now.",
+      vcOverwrite:"This phone has its own unfinished table. Taking control will replace it. Continue?", vcFail:"Couldn't take control. Try again.",
       rules:s=>"<p>Every player puts an equal share on the table each game. Right now that is Rs "+s+".</p><ul>"+
         "<li><b>Win</b> (2 of 3 hands): the winner takes all the money on the table.</li>"+
         "<li><b>Salami</b> (3 of 3 hands): the winner takes the table, and every loser pays one extra share.</li>"+
@@ -635,6 +660,13 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       vwDone:"यो टेबलको खेल सकियो। यो अन्तिम हिसाब हो।", vwOwn:"आफ्नै टेबल सुरु गर्नुहोस्", vwOops:"यो टेबल खुलेन",
       vwGone:"यो लिंकको म्याद सकियो वा टेबल छैन। होस्टसँग नयाँ लिंक माग्नुहोस्।", vwBad:"यो लिंक बिग्रिएको जस्तो छ। होस्टलाई फेरि सेयर गर्न भन्नुहोस्।",
       vwLast:(n,w,x)=>"खेल "+n+": "+w+" ले रु "+x+" जित्यो", vwLastKitti:(n,x)=>"खेल "+n+": किट्टी, टेबलमा रु "+x, vwLeft:"छोडेको",
+      ctlReq:n=>(n || "एक खेलाडी")+" हिसाब राख्न चाहनुहुन्छ।", ctlYes:"जिम्मा दिने", ctlNo:"अस्वीकार",
+      ctlLeaveBtn:"छोडेर अरूलाई जिम्मा दिने", ctlLeaveAsk:"लिंक भएका जोकोहीलाई हिसाब राख्न दिने? यो फोनमा हेर्न मात्र मिल्नेछ।",
+      ctlLost:"अब अर्कोले हिसाब राख्दै हुनुहुन्छ। यो फोनमा हेर्न मात्र मिल्छ।", ctlGave:"तपाईंले जिम्मा दिनुभयो। अब यो फोनमा हेर्न मात्र मिल्छ।", ctlLeft:"तपाईंले छोड्नुभयो। लिंक भएका जोकोहीले जिम्मा लिन सक्छन्।",
+      vcIn:n=>(n ? n+" ले" : "होस्टले")+" हिसाब राख्दै हुनुहुन्छ।", vcAsk:"जिम्मा माग्ने", vcWait:n=>(n || "होस्ट")+" सँग जिम्मा मागियो। पर्खँदै…",
+      vcCancel:"माग रद्द", vcOther:n=>(n || "कसैले")+" जिम्मा माग्नुभएको छ।", vcTake:"जिम्मा लिने",
+      vcFree:"अहिले कसैले हिसाब राखेको छैन। लिंक भएका जोकोहीले जिम्मा लिन सक्छन्।", vcGot:"अब तपाईं हिसाब राख्दै हुनुहुन्छ।",
+      vcOverwrite:"यो फोनमा आफ्नै अधुरो टेबल छ। जिम्मा लिँदा त्यो हट्नेछ। जारी राख्ने?", vcFail:"जिम्मा लिन सकिएन। फेरि प्रयास गर्नुहोस्।",
       rules:s=>"<p>हरेक खेलमा सबै खेलाडीले बराबर भाग टेबलमा राख्छन्। अहिले त्यो रु "+s+" हो।</p><ul>"+
         "<li><b>जित</b> (३ मध्ये २ हात): टेबलको सबै पैसा विजेताले लिन्छ।</li>"+
         "<li><b>सलामी</b> (३ मध्ये ३ हात): विजेताले टेबलको पैसा लिन्छ, र हरेक हार्नेले एक भाग थप तिर्छ।</li>"+
@@ -1370,14 +1402,60 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   try{ live = JSON.parse(localStorage.getItem(LIVEKEY) || "null"); }catch(e){}
   function liveForget(){ live = null; clearTimeout(pushTimer); try{ localStorage.removeItem(LIVEKEY); }catch(e){} }
   function livePush(){ if(!live || !state) return; clearTimeout(pushTimer); pushTimer = setTimeout(sendLive, 1500); }
+  // the full state goes up, undo history included, so control can be handed over mid-game
   async function sendLive(){
     if(!live || !state) return false;
     try{
-      const body = Object.assign({}, state); delete body.actions;
-      const r = await fetch(API + live.id, {method:"PUT", headers:{"content-type":"application/json"}, body:JSON.stringify({key:live.key, state:body})});
-      return r.ok;
+      const r = await fetch(API + live.id, {method:"PUT", headers:{"content-type":"application/json"}, body:JSON.stringify({key:live.key, state, ctl:live.ctl || ""})});
+      if(r.status === 403){ becomeViewer("ctlLost"); return false; }   // someone else took control
+      if(!r.ok) return false;
+      showRequest((await r.json()).request); startHostPoll();
+      return true;
     }catch(e){ return false; }
   }
+  async function post(id, body){
+    try{
+      const r = await fetch(API + id, {method:"POST", headers:{"content-type":"application/json"}, body:JSON.stringify(body)});
+      return r.ok ? await r.json() : null;
+    }catch(e){ return null; }
+  }
+
+  /* ---------- control: one scorekeeper at a time ----------
+     The controller polls for "can I have control?" requests. Handing over (or leaving) turns this phone into
+     a viewer of the same table; the receiving phone gets the whole game, undo history included. */
+  let hostTimer = null;
+  function startHostPoll(){ if(hostTimer || !live) return; hostTimer = setInterval(hostPoll, 6000); hostPoll(); }
+  async function hostPoll(){
+    if(!live || !state || document.hidden) return;
+    try{
+      const r = await fetch(API + live.id, {cache:"no-store"});
+      if(r.ok) showRequest((await r.json()).request);
+    }catch(e){}
+  }
+  function showRequest(q){
+    $("ctlReq").classList.toggle("hidden", !q);
+    if(q) $("ctlReqTxt").textContent = t("ctlReq")(q.name);
+  }
+  function becomeViewer(msg){
+    const id = live && live.id;
+    clearInterval(hostTimer); hostTimer = null; liveForget();
+    try{ localStorage.removeItem(KEY); sessionStorage.setItem("kitti-msg", msg); }catch(e){}
+    location.href = baseUrl() + "?t=" + id;
+  }
+  $("ctlYes").onclick = async () => {
+    if(!live) return;
+    clearTimeout(pushTimer); await sendLive();          // make sure the newest game is saved first
+    if(await post(live.id, {action:"answer", key:live.key, accept:true})) becomeViewer("ctlGave");
+  };
+  $("ctlNo").onclick = async () => {
+    if(!live) return;
+    showRequest(null); await post(live.id, {action:"answer", key:live.key, accept:false});
+  };
+  $("shareLeave").onclick = async () => {
+    if(!live || !confirm(t("ctlLeaveAsk"))) return;
+    clearTimeout(pushTimer); await sendLive();
+    if(await post(live.id, {action:"leave", key:live.key})) becomeViewer("ctlLeft");
+  };
   const b64u = bytes => btoa(String.fromCharCode(...bytes)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
   const unb64u = s => Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")), c => c.charCodeAt(0));
   async function pipe(bytes, stream){ return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer()); }
@@ -1396,6 +1474,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
   let shareLink = "";
   async function openShare(){
     $("shareInfo").textContent = t("shareMaking"); $("shareUrl").value = ""; $("shareErr").textContent = "";
+    $("shareLeave").classList.add("hidden");
     open("sShare");
     let fresh = false;
     if(!live){ live = {id: rid(12), key: rid(28)}; fresh = true; }
@@ -1403,6 +1482,7 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       if(fresh) try{ localStorage.setItem(LIVEKEY, JSON.stringify(live)); }catch(e){}
       shareLink = baseUrl() + "?t=" + live.id;
       $("shareInfo").textContent = t("shareLive");
+      $("shareLeave").classList.remove("hidden");
     } else {
       if(fresh) live = null;
       shareLink = baseUrl() + "#s=" + await encodeSnap();
@@ -1430,21 +1510,55 @@ body.kb .rail,body.kb .toast{visibility:hidden}
     $("vwBody").classList.add("hidden"); $("vwErr").classList.remove("hidden");
     $("vwErrMsg").textContent = msg;
   }
+  // this phone's id, so the server knows who asked for control
+  const VID = (() => { try{ let v = localStorage.getItem("kitti-vid"); if(!v){ v = rid(16); localStorage.setItem("kitti-vid", v); } return v; }catch(e){ return rid(16); } })();
+  let vCtl = {ctl:"", free:false, request:null}, claiming = false, vFlash = "";
   async function pollView(){
     try{
-      const r = await fetch(API + VIEW_ID, {cache:"no-store"});
+      const r = await fetch(API + VIEW_ID + "?vid=" + VID, {cache:"no-store"});
       if(r.status === 404 || r.status === 400){ viewerError(t("vwGone")); clearInterval(vTimer); return; }
       if(!r.ok) throw new Error(r.status);
       const j = await r.json();
       vState = j.state; vAt = j.at; vOk = true;
+      vCtl = {ctl: j.ctl || "", free: !!j.free, request: j.request};
+      if(j.offer && !claiming) claim();               // the controller said yes
     }catch(e){ vOk = false; }
     if(vState) renderViewer();
   }
+  const myName = () => vMe != null && vState && vState.players[vMe] ? vState.players[vMe] : "";
+  // taking control replaces any table this phone was keeping on its own, so check first
+  function okToReplace(){
+    let mine = null, myLive = null;
+    try{ mine = JSON.parse(localStorage.getItem(KEY) || "null"); myLive = JSON.parse(localStorage.getItem(LIVEKEY) || "null"); }catch(e){}
+    const unfinished = mine && ((mine.rounds || []).length || (mine.events || []).length);
+    return !unfinished || (myLive && myLive.id === VIEW_ID) || confirm(t("vcOverwrite"));
+  }
+  async function claim(){
+    claiming = true;
+    const j = await post(VIEW_ID, {action:"claim", vid:VID, name:myName()});
+    claiming = false;
+    if(!j || !j.key){ vFlash = t("vcFail"); renderViewer(); return; }
+    const st = j.state; st.actions = st.actions || [];
+    try{
+      localStorage.setItem(KEY, JSON.stringify(st));
+      localStorage.setItem(LIVEKEY, JSON.stringify({id:VIEW_ID, key:j.key, ctl:myName()}));
+      sessionStorage.setItem("kitti-msg", "vcGot");
+    }catch(e){}
+    location.href = baseUrl();                        // open the game as its scorekeeper
+  }
+  $("vwCtlBtn").onclick = async () => {
+    const what = $("vwCtlBtn").dataset.do;
+    if(what === "take"){ if(okToReplace()) claim(); }
+    else if(what === "ask"){ if(!okToReplace()) return; vFlash = ""; await post(VIEW_ID, {action:"request", vid:VID, name:myName()}); pollView(); }
+    else if(what === "cancel"){ await post(VIEW_ID, {action:"cancel", vid:VID}); pollView(); }
+  };
   function startViewer(){
     ["setup","game","settle"].forEach(id => $(id).classList.add("hidden"));
     $("viewer").classList.remove("hidden");
     applyText();
     try{ const m = localStorage.getItem(ME_KEY); vMe = m == null ? null : +m; }catch(e){}
+    // arrived here after handing over or losing control: say so once
+    try{ const m = sessionStorage.getItem("kitti-msg"); if(m){ vFlash = t(m); sessionStorage.removeItem("kitti-msg"); } }catch(e){}
     if(VIEW_ID){
       pollView();
       vTimer = setInterval(() => { if(!document.hidden) pollView(); }, 5000);
@@ -1521,10 +1635,29 @@ body.kb .rail,body.kb .toast{visibility:hidden}
       : '<div class="empty">' + t("vwNoGames") + '</div>';
 
     $("vwFoot").textContent = VIEW_ID ? t("vwLiveNote") : t("vwSnapNote");
+
+    // who keeps score, and the button to ask for (or take) control
+    $("vwCtl").classList.toggle("hidden", !VIEW_ID);
+    if(VIEW_ID){
+      let txt, act = null;
+      if(vCtl.free){ txt = t("vcFree"); act = "take"; }
+      else if(vCtl.request && vCtl.request.mine){ txt = t("vcWait")(vCtl.ctl); act = "cancel"; }
+      else if(vCtl.request){ txt = t("vcIn")(vCtl.ctl) + " " + t("vcOther")(vCtl.request.name); }
+      else { txt = t("vcIn")(vCtl.ctl); act = "ask"; }
+      $("vwCtlFlash").textContent = vFlash;
+      $("vwCtlTxt").textContent = txt;
+      const btn = $("vwCtlBtn");
+      btn.classList.toggle("hidden", !act || claiming);
+      if(act){ btn.dataset.do = act; btn.textContent = t(act === "take" ? "vcTake" : act === "ask" ? "vcAsk" : "vcCancel"); btn.className = act === "cancel" ? "ghost" : "okb"; }
+    }
   }
 
   if(VIEW_ID || VIEW_SNAP) startViewer();
-  else { state = load(); show(); }
+  else {
+    state = load(); show();
+    if(live && state) startHostPoll();               // keep listening for control requests after a reload
+    try{ const m = sessionStorage.getItem("kitti-msg"); if(m && state){ sessionStorage.removeItem("kitti-msg"); toast(t(m), true); } }catch(e){}
+  }
 })();
 </script>
 </body>
